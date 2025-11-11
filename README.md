@@ -1,8 +1,4 @@
-Aquí está el README completo en un solo bloque de markdown para que lo copies y pegues directamente en GitHub:
-markdown# CalcX Advanced
-
-Advanced mathematical calculator with graphical interface and command-line support.
-
+Advanced mathematical calculator with graphical interface and command-line support
 ## Table of Contents
 
 - [Overview](#overview)
