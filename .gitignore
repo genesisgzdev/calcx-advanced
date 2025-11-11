@@ -1,0 +1,14 @@
+.calc_ultra_history.log
+.calcx_history
+*.log
+*.tmp
+*.swp
+*.bak
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+__pycache__/
+*.pyc
+venv/
+.env

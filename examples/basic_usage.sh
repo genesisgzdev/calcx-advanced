@@ -1,0 +1,11 @@
+#!/bin/bash
+echo "Basic Calculator Examples:"
+echo "=========================="
+../calcx.sh "2 + 2"
+../calcx.sh "10 - 5"
+../calcx.sh "3 * 7"
+../calcx.sh "20 / 4"
+../calcx.sh "2 ^ 8"
+../calcx.sh "sqrt(16)"
+../calcx.sh "(5 + 3) * 2"
+../calcx.sh "((10 + 5) * 3) / 5"
