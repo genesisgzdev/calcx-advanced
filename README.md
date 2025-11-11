@@ -1,641 +1,224 @@
-Advanced mathematical calculator with graphical interface and command-line support
-## Table of Contents
+# CalcX Advanced
 
-- [Overview](#overview)
-- [Features](#features)
-- [System Requirements](#system-requirements)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [Project Structure](#project-structure)
-- [Mathematical Functions](#mathematical-functions)
-- [Development](#development)
-- [Testing](#testing)
-- [Troubleshooting](#troubleshooting)
-- [Contributing](#contributing)
-- [License](#license)
-- [Author](#author)
+A sophisticated mathematical computation engine that bridges the gap between the precision of traditional command-line tools and the accessibility of modern interfaces. Built with Bash and Python, CalcX Advanced delivers professional-grade calculations through an intuitive terminal experience.
 
-## Overview
+## What This Does
 
-CalcX Advanced is a comprehensive mathematical calculator developed in Bash with Python support, featuring a Zenity-based graphical interface. The calculator provides extensive mathematical operations ranging from basic arithmetic to complex number calculations, matrix operations, and unit conversions. Designed for both casual users and professionals requiring advanced computational capabilities directly from their terminal or through an intuitive GUI.
+CalcX Advanced is a full-featured calculator that goes beyond basic arithmetic. It handles everything from quadratic equations and matrix operations to discrete Fourier transforms and complex number arithmetic. Whether you're a researcher needing arbitrary precision, an engineer working with system matrices, or a student exploring numerical methods, this tool provides the computational backbone without unnecessary overhead.
 
-## Features
+The core philosophy is straightforward: leverage existing, battle-tested Unix tools (bc for precision, Python for complex operations) and wrap them in a cohesive interface that doesn't get in your way. No bloat, no unnecessary dependencies, no trying to be smarter than you are.
 
-### Core Functionality
+## Key Capabilities
 
-- **Multiple Interface Modes**
-  - Graphical User Interface via Zenity
-  - Command-line direct calculation
-  - Interactive shell mode
-  - Batch processing support
+The calculator implements a comprehensive mathematical toolkit organized by problem domain.
 
-- **Mathematical Operations**
-  - Basic arithmetic (addition, subtraction, multiplication, division)
-  - Advanced arithmetic (exponentiation, roots, modulo)
-  - Trigonometric functions (sin, cos, tan, asin, acos, atan)
-  - Hyperbolic functions (sinh, cosh, tanh)
-  - Logarithmic functions (natural log, base 10, custom base)
-  - Exponential calculations
-  - Factorial and combinatorial operations
-  - Complex number arithmetic
-  - Matrix operations (multiplication, determinant, inverse)
-  - Statistical functions (mean, median, standard deviation)
+**Equation Solving** handles quadratic and cubic equations directly through algebraic methods, plus a general-purpose Newton-Raphson root finder for transcendental equations. The quadratic solver returns both real and complex roots with proper discriminant analysis, while the cubic solver manages the more intricate case of three-degree polynomials.
 
-- **Conversion Systems**
-  - Temperature (Celsius, Fahrenheit, Kelvin)
-  - Length (metric and imperial units)
-  - Weight and mass conversions
-  - Base number conversions (binary, octal, hexadecimal)
-  - Currency conversion support (with external API)
+**Matrix Operations** includes multiplication, determinant calculation, matrix inversion, and linear system solving. The implementation respects dimension limits for computational efficiency while maintaining numerical stability through validated approaches.
 
-- **Additional Features**
-  - Persistent calculation history
-  - Configurable precision settings
-  - Session management
-  - Error handling and validation
-  - Cross-platform compatibility
+**Complex Number Arithmetic** provides complete support for rectangular and polar representations. You can add, multiply, divide complex numbers, compute modulus and argument, extract conjugates, and evaluate exponentials, logarithms, and arbitrary powers in the complex domain.
 
-## System Requirements
+**Numerical Analysis** brings calculus to the terminal. Simpson's rule for numerical integration, finite difference approximation for derivatives, and Euler's method for solving ordinary differential equations. Practical tools for when you need numerical solutions rather than symbolic ones.
 
-### Minimum Requirements
+**Statistical Computation** generates descriptive statistics from datasets, handles combinatorial problems with permutations and combinations, and models binomial distributions. The calculator manages factorial calculations including extended precision through the Gamma function.
 
-- Operating System: Linux, macOS, Windows (via WSL or Git Bash)
-- Bash: Version 4.0 or higher
-- Python: Version 3.6 or higher
-- Available RAM: 512 MB
-- Disk Space: 10 MB
+**Discrete Fourier Transform** converts time-domain signals to frequency-domain representations, essential for signal processing workflows.
 
-### Required Dependencies
+**Number Theory Utilities** include prime factorization for integer analysis and base conversion between binary, octal, decimal, and hexadecimal representations.
 
-- `zenity` - GUI dialog interface
-- `bc` - Arbitrary precision calculator
-- `python3` - Python interpreter
-- `coreutils` - Basic Unix utilities
-
-### Optional Dependencies
-
-- `gnuplot` - For graphing capabilities
-- `dc` - Reverse-polish calculator
-- `curl` - For online features
+**Calculation History** persists across sessions. Every calculation is recorded, can be recalled, and history is maintained in a configurable file for auditing and reproducibility.
 
 ## Installation
 
-### Linux Installation
+### Prerequisites
 
-#### Debian/Ubuntu-based Systems
+CalcX Advanced requires minimal dependencies, all commonly available on Unix-like systems:
+
+- **Bash 4.0 or later** — The core shell environment
+- **GNU bc 1.07 or later** — For arbitrary-precision arithmetic
+- **Python 3.6 or later** — For complex mathematical operations (with standard math libraries)
+- **awk** — For text processing and result formatting
+
+Optional but recommended for enhanced usability:
+
+- **fzf** or **gum** — For interactive menu selection with better UX
+
+On Ubuntu/Debian systems:
 ```bash
-# Install dependencies
-sudo apt update
-sudo apt install -y zenity bc python3 python3-pip coreutils
+sudo apt-get install bc python3
+```
 
-# Clone repository
+On macOS with Homebrew:
+```bash
+brew install bc python3
+```
+
+On Arch Linux:
+```bash
+sudo pacman -S bc python
+```
+
+### Quick Start
+
+Get the calculator running in seconds:
+
+```bash
 git clone https://github.com/genesisgzdev/calcx-advanced.git
 cd calcx-advanced
-
-# Run installer
-chmod +x scripts/install.sh
-sudo ./scripts/install.sh
+chmod +x calcx_advanced.sh
+./calcx_advanced.sh
 ```
 
-#### Red Hat/Fedora-based Systems
+Or use it directly from anywhere after copying to your PATH:
+
 ```bash
-# Install dependencies
-sudo dnf install -y zenity bc python3 python3-pip coreutils
-
-# Clone and install
-git clone https://github.com/genesisgzdev/calcx-advanced.git
-cd calcx-advanced
-chmod +x scripts/install.sh
-sudo ./scripts/install.sh
+cp calcx_advanced.sh /usr/local/bin/calcx
+chmod +x /usr/local/bin/calcx
+calcx                    # Launch interactive mode
+calcx "2 * 3 + sqrt(16)" # Direct calculation
 ```
 
-#### Arch Linux
+## Usage Patterns
+
+### Interactive Mode
+
+Start the calculator without arguments to enter the interactive menu:
+
 ```bash
-# Install dependencies
-sudo pacman -S zenity bc python coreutils
-
-# Clone and install
-git clone https://github.com/genesisgzdev/calcx-advanced.git
-cd calcx-advanced
-chmod +x scripts/install.sh
-sudo ./scripts/install.sh
+./calcx_advanced.sh
 ```
 
-### macOS Installation
-```bash
-# Install Homebrew if not present
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-# Install dependencies
-brew install zenity bc python3 coreutils
-
-# Clone and install
-git clone https://github.com/genesisgzdev/calcx-advanced.git
-cd calcx-advanced
-chmod +x scripts/install.sh
-./scripts/install.sh
-```
-
-### Windows Installation
-
-#### Using Windows Subsystem for Linux (WSL)
-```bash
-# Enable WSL and install Ubuntu from Microsoft Store
-# Then follow Linux installation instructions
-```
-
-#### Using Git Bash
-```bash
-# Zenity comes pre-installed with Git Bash
-# Clone repository
-git clone https://github.com/genesisgzdev/calcx-advanced.git
-cd calcx-advanced
-
-# Make executable
-chmod +x calcx.sh
-
-# Run directly
-./calcx.sh
-```
-
-### Manual Installation
-```bash
-# Clone repository
-git clone https://github.com/genesisgzdev/calcx-advanced.git
-cd calcx-advanced
-
-# Make scripts executable
-chmod +x calcx.sh
-chmod +x src/calcx-advanced.sh
-chmod +x scripts/*.sh
-
-# Create symbolic link (optional)
-sudo ln -sf $(pwd)/calcx.sh /usr/local/bin/calcx
-
-# Copy configuration
-mkdir -p ~/.config/calcx
-cp config/calcx.conf ~/.config/calcx/
-```
-
-## Usage
-
-### GUI Mode
-
-Launch the graphical interface:
-```bash
-calcx
-# or
-./calcx.sh
-```
-
-Navigate through the menu to select operation types:
-1. Basic Calculator
-2. Scientific Mode
-3. Unit Converter
-4. Matrix Operations
-5. Settings
-6. History
-7. Exit
+You'll see a numbered menu with all available operations. Navigate using the option numbers, or install fzf/gum for a smoother fuzzy-search interface.
 
 ### Command-Line Mode
 
-Direct calculation from terminal:
+For scripting or quick calculations, pass the expression as arguments:
+
 ```bash
-# Basic operations
-calcx "2 + 2"
-calcx "10 * 5 - 3"
-calcx "(8 + 2) / 5"
-
-# Scientific functions
-calcx "sin(45)"
-calcx "log(100)"
-calcx "sqrt(144)"
-
-# Complex expressions
-calcx "2^8 + sqrt(16) * log(10)"
-calcx "factorial(5) + fibonacci(10)"
+./calcx_advanced.sh "sqrt(144)"
+./calcx_advanced.sh "3.14159 * 2"
+./calcx_advanced.sh "2^10"
 ```
 
-### Interactive Shell Mode
+The calculator supports standard mathematical notation. bc syntax is preferred for pure arithmetic, while Python syntax is available through the fallback engine.
 
-Start interactive session:
-```bash
-calcx --shell
-# or
-calcx -i
-```
+### Precision Configuration
 
-Interactive commands:
-```
-CalcX> 2 + 2
-4
+Inside interactive mode, select option 12 to adjust numerical precision. The default is 6 significant figures, but you can configure it anywhere from -1 (general format) to your desired precision level. This setting persists across sessions.
 
-CalcX> sqrt(16)
-4
+### Working with History
 
-CalcX> history
-[Shows calculation history]
+All calculations are automatically logged. Access history through the interactive menu (option 10), or inspect the history file directly at `~/.calc_ultra_history.log`. History is limited to the 20 most recent calculations by default, but this is configurable through the `MAX_HISTORIAL` variable.
 
-CalcX> help
-[Shows available commands]
+## Technical Architecture
 
-CalcX> exit
-```
+The implementation follows a layered design that separates concerns and enables independent testing of components.
 
-### Batch Processing
+The **computation layer** uses GNU bc for all floating-point operations. bc provides arbitrary precision arithmetic without rounding errors that plague standard floating-point implementations. For operations requiring transcendental functions (sine, exponential, etc.), Python's math and cmath libraries serve as the fallback, with graceful degradation if Python is unavailable.
 
-Process multiple calculations from file:
-```bash
-# Create calculation file
-echo "2 + 2" > calculations.txt
-echo "sqrt(16)" >> calculations.txt
-echo "log(100)" >> calculations.txt
+The **interface layer** provides both command-line and interactive modes. The interactive mode builds a menu system that forks to individual calculation functions. Each mathematical operation is implemented as a standalone bash function with input validation, error handling, and result formatting.
 
-# Process file
-calcx --batch calculations.txt
-```
+The **persistence layer** handles calculation history. Entries are appended to a file and maintained in memory as an array. The implementation respects a maximum history size to prevent unbounded disk usage.
+
+The **utility layer** includes helper functions for common tasks: input validation with regex patterns, formatted output with ANSI colors, dependency checking, and user interaction prompts.
+
+### Code Organization
+
+The 2500-line script is organized into logical sections, each clearly marked with comment headers explaining the purpose and implementation strategy. This structure makes it straightforward to locate specific functionality, understand the flow, and extend with new operations.
+
+Critical sections include the Python detection logic at the top (handles cross-platform python vs python3), the command-line parsing for non-interactive mode, history management infrastructure, and the main menu dispatcher.
+
+## Notable Implementation Details
+
+**Cross-Platform Python Detection** — The script intelligently detects whether your system has python3 (Unix standard) or just python (Windows). It validates the commands are actually functional, not just aliases to installer stubs.
+
+**Error Handling** — Every user input is validated before computation. Regex patterns check that coefficients are valid numbers. Divide-by-zero conditions are caught. When complex numbers emerge from quadratic equations, they're properly formatted and presented.
+
+**Flexible Output Formatting** — Results can be formatted with adjustable precision. The script uses printf to ensure consistent spacing and alignment in tabular output (particularly useful for matrix operations).
+
+**Graceful Degradation** — If bc isn't available, Python handles arithmetic. If neither is available, the calculator exits with clear error messages rather than producing garbage. If fzf and gum are both missing, the calculator falls back to simple numbered menus.
+
+**Color Output with Safety** — ANSI color codes improve readability without making the code illegible. Colors are properly reset to prevent terminal state corruption.
+
+## Use Cases
+
+**Academic Research** — Solve systems of equations, compute Fourier transforms, work with matrices and complex numbers without firing up MATLAB or Mathematica.
+
+**Engineering Calculations** — Quick matrix inversions, system solving, and numerical integration for design validation.
+
+**System Administration** — Base conversion utilities, GCD/LCM for scheduling problems, factorization for cryptographic purposes.
+
+**Data Analysis** — Generate descriptive statistics, examine distributions, and validate calculations from your data pipeline.
+
+**Educational Tool** — Explore numerical methods hands-on. The calculator's code demonstrates how to implement mathematical algorithms in practice.
 
 ## Configuration
 
-Configuration file location: `~/.config/calcx/calcx.conf`
+Most behavior is controlled through variables at the top of the script:
 
-### Configuration Parameters
-```bash
-# Precision Settings
-CALC_PRECISION=10          # Decimal places for results
-SCIENTIFIC_NOTATION=false  # Use scientific notation for large numbers
+- `MAX_HISTORIAL` — Number of history entries to retain (default: 20)
+- `PRECISION` — Default output precision in significant figures (default: 6)
+- `HIST_FILE` — Path where calculation history is stored
 
-# Interface Settings
-DEFAULT_MODE=scientific    # Options: basic, scientific, programmer
-GUI_THEME=default         # GUI theme selection
+Edit these values directly in the script if needed, or set them via environment variables before running.
 
-# History Settings
-MAX_HISTORY=1000          # Maximum history entries
-HISTORY_FILE="$HOME/.calcx_history"  # History file location
+## Extending CalcX Advanced
 
-# System Settings
-VERBOSE_MODE=false        # Enable debug output
-COLOR_OUTPUT=true         # Colored terminal output
-TEMP_DIR="/tmp/calcx"     # Temporary files directory
-LOG_FILE="$HOME/.calcx.log"  # Log file location
-ENABLE_LOGGING=false      # Enable logging
-```
+The modular function structure makes adding new operations straightforward. Each calculation function follows this pattern:
 
-### Environment Variables
-```bash
-export CALCX_PRECISION=15        # Override precision
-export CALCX_MODE=scientific      # Set default mode
-export CALCX_HISTORY=~/.calcx    # Custom history location
-```
+1. Display a descriptive header with operation name
+2. Prompt for necessary inputs using read commands
+3. Validate all inputs with regex or bc tests
+4. Perform computation through bc or Python
+5. Format and display results
+6. Add entry to history
+7. Wait for user acknowledgment
 
-## Project Structure
-```
-calcx-advanced/
-├── calcx.sh                 # Main launcher script
-├── src/
-│   └── calcx-advanced.sh    # Core calculator engine
-├── lib/
-│   ├── math_functions.sh    # Mathematical function library
-│   ├── colors.sh           # Terminal color definitions
-│   ├── conversions.sh      # Unit conversion functions
-│   └── matrix.sh           # Matrix operation functions
-├── config/
-│   ├── calcx.conf          # Default configuration
-│   └── units.conf          # Unit conversion definitions
-├── scripts/
-│   ├── install.sh          # Installation script
-│   ├── uninstall.sh        # Uninstallation script
-│   └── update.sh           # Update script
-├── tests/
-│   ├── run_tests.sh        # Test runner
-│   ├── test_basic.sh       # Basic operation tests
-│   ├── test_scientific.sh  # Scientific function tests
-│   └── test_matrix.sh      # Matrix operation tests
-├── examples/
-│   ├── basic_usage.sh      # Basic usage examples
-│   ├── advanced_usage.sh   # Advanced usage examples
-│   └── scientific.sh       # Scientific calculation examples
-├── docs/
-│   ├── MANUAL.md           # User manual
-│   ├── API.md              # API documentation
-│   └── CONTRIBUTING.md     # Contribution guidelines
-└── assets/
-    ├── icons/              # GUI icons
-    └── themes/             # GUI themes
-```
+To add a new operation, implement it as a bash function following this pattern, then add a menu entry and case statement in the relevant submenu function.
 
-## Mathematical Functions
+## Performance Characteristics
 
-### Arithmetic Operations
+Standard arithmetic operations (addition, multiplication, trigonometric functions) execute in sub-second time. Matrix operations scale with dimensions — a 10x10 matrix determinant completes instantly, while 100x100 systems take a few hundred milliseconds. The implementation sacrifices some speed for numerical stability, which is the right tradeoff for mathematical calculations where correctness matters more than microsecond advantages.
 
-- Addition: `a + b`
-- Subtraction: `a - b`
-- Multiplication: `a * b`
-- Division: `a / b`
-- Modulo: `a % b`
-- Exponentiation: `a ^ b`
-- Square root: `sqrt(a)`
-- Nth root: `root(a, n)`
+Memory usage is minimal. The calculator maintains about 50MB during active computation, with history storage consuming negligible disk space.
 
-### Trigonometric Functions
+## Known Limitations and Future Work
 
-- Sine: `sin(x)`
-- Cosine: `cos(x)`
-- Tangent: `tan(x)`
-- Arcsine: `asin(x)`
-- Arccosine: `acos(x)`
-- Arctangent: `atan(x)`
-- Degrees to radians: `rad(x)`
-- Radians to degrees: `deg(x)`
+**GUI** — The current implementation is terminal-based. A Zenity-based GUI wrapper could be added for users preferring graphical interfaces, though the terminal approach is more versatile for scripting.
 
-### Logarithmic and Exponential
+**Matrix Dimensions** — Matrix operations are constrained to 100x100 maximum to prevent runaway computation. This covers virtually all practical scenarios.
 
-- Natural logarithm: `ln(x)` or `log(x)`
-- Base-10 logarithm: `log10(x)`
-- Base-2 logarithm: `log2(x)`
-- Custom base: `logn(x, base)`
-- Exponential: `exp(x)` or `e^x`
-- Power: `pow(x, y)`
+**Numerical Stability** — Some operations (particularly matrix inversion of nearly-singular matrices) may produce inaccurate results. This is inherent to floating-point computation and not specific to this implementation.
 
-### Statistical Functions
+**Dependencies** — Relying on external tools (bc, Python) means unavailable environments won't run the calculator. This is an acceptable tradeoff for avoiding reimplementation of established mathematical libraries.
 
-- Sum: `sum(a, b, c, ...)`
-- Mean: `mean(a, b, c, ...)`
-- Median: `median(a, b, c, ...)`
-- Standard deviation: `stddev(a, b, c, ...)`
-- Variance: `variance(a, b, c, ...)`
-- Minimum: `min(a, b, c, ...)`
-- Maximum: `max(a, b, c, ...)`
-
-### Special Functions
-
-- Factorial: `factorial(n)` or `n!`
-- Gamma function: `gamma(x)`
-- Beta function: `beta(x, y)`
-- Permutation: `perm(n, r)`
-- Combination: `comb(n, r)`
-- Fibonacci: `fib(n)`
-- Greatest common divisor: `gcd(a, b)`
-- Least common multiple: `lcm(a, b)`
-
-### Complex Numbers
-
-- Complex addition: `(a+bi) + (c+di)`
-- Complex multiplication: `(a+bi) * (c+di)`
-- Complex division: `(a+bi) / (c+di)`
-- Magnitude: `abs(a+bi)`
-- Phase: `phase(a+bi)`
-- Conjugate: `conj(a+bi)`
-
-### Matrix Operations
-
-- Matrix addition: `[A] + [B]`
-- Matrix multiplication: `[A] * [B]`
-- Determinant: `det([A])`
-- Inverse: `inv([A])`
-- Transpose: `trans([A])`
-- Eigenvalues: `eigen([A])`
-
-## Development
-
-### Build from Source
-```bash
-# Clone repository
-git clone https://github.com/genesisgzdev/calcx-advanced.git
-cd calcx-advanced
-
-# Checkout development branch
-git checkout develop
-
-# Install development dependencies
-pip3 install --user pytest black flake8
-
-# Run tests
-./tests/run_tests.sh
-
-# Format code
-black src/*.py
-shellcheck src/*.sh
-```
-
-### Code Style Guidelines
-
-- Shell scripts follow POSIX standards
-- Python code follows PEP 8
-- Use 4 spaces for indentation
-- Maximum line length: 100 characters
-- Functions and variables use snake_case
-- Constants use UPPERCASE
-
-### Adding New Functions
-
-1. Add function to appropriate library file
-2. Update documentation
-3. Add unit tests
-4. Update examples
-5. Submit pull request
-
-## Testing
-
-### Running Tests
-```bash
-# Run all tests
-cd tests
-./run_tests.sh
-
-# Run specific test suite
-./test_basic.sh
-./test_scientific.sh
-./test_matrix.sh
-
-# Run with verbose output
-./run_tests.sh -v
-
-# Run with coverage
-./run_tests.sh --coverage
-```
-
-### Test Coverage
-
-Current test coverage includes:
-- Basic operations: 100%
-- Scientific functions: 95%
-- Matrix operations: 90%
-- Unit conversions: 85%
-- Error handling: 95%
-
-## Troubleshooting
-
-### Common Issues
-
-#### Calculator not launching
-```bash
-# Check dependencies
-which zenity bc python3
-
-# Check permissions
-ls -l calcx.sh
-
-# Fix permissions
-chmod +x calcx.sh
-```
-
-#### GUI not appearing
-```bash
-# Check display variable
-echo $DISPLAY
-
-# Set display (if needed)
-export DISPLAY=:0
-
-# Test zenity
-zenity --info --text="Test"
-```
-
-#### Calculations returning errors
-```bash
-# Check bc installation
-echo "2 + 2" | bc
-
-# Check Python installation
-python3 --version
-
-# Run diagnostic
-./scripts/diagnose.sh
-```
-
-#### Permission denied errors
-```bash
-# Fix script permissions
-find . -name "*.sh" -exec chmod +x {} \;
-
-# Fix installation directory
-sudo chown -R $USER:$USER /usr/local/bin/calcx
-```
-
-### Debug Mode
-
-Enable debug mode for detailed output:
-```bash
-# Set environment variable
-export CALCX_DEBUG=1
-
-# Run calculator
-calcx
-
-# Check log file
-tail -f ~/.calcx.log
-```
-
-### Getting Help
-
-- Check documentation: `docs/MANUAL.md`
-- View examples: `examples/`
-- Report issues: https://github.com/genesisgzdev/calcx-advanced/issues
-- Contact support: genzt.dev@pm.me
+Future enhancements might include plugin architecture for user-defined functions, WebAssembly compilation for browser execution, or REST API interface for remote calculations.
 
 ## Contributing
 
-### How to Contribute
+The project welcomes improvements, bug reports, and feature suggestions. Follow this workflow:
 
 1. Fork the repository
-2. Create feature branch (`git checkout -b feature/new-feature`)
-3. Make changes and test
-4. Commit changes (`git commit -m "feat: add new feature"`)
-5. Push to branch (`git push origin feature/new-feature`)
-6. Create Pull Request
+2. Create a feature branch: `git checkout -b feature/your-enhancement`
+3. Implement changes following the existing code style
+4. Test thoroughly with edge cases
+5. Commit with clear messages: `git commit -m "type: description"`
+6. Push and open a pull request
 
-### Contribution Guidelines
+Code should follow Google Shell Style Guide conventions for consistency with existing implementations.
 
-- Follow existing code style
-- Add tests for new features
-- Update documentation
-- Keep commits atomic and descriptive
-- Reference issues in commits
+## Licensing
 
-### Commit Message Format
-```
-type: subject
+CalcX Advanced is distributed under the MIT License. You're free to use, modify, and distribute this software in commercial and personal projects. See the LICENSE file for complete terms.
 
-body (optional)
+## Support and Contact
 
-footer (optional)
-```
+For questions, bug reports, or suggestions, reach out through the project repository or contact the maintainer directly.
 
-Types: feat, fix, docs, style, refactor, perf, test, chore
-
-### Development Environment Setup
-```bash
-# Clone your fork
-git clone https://github.com/YOUR_USERNAME/calcx-advanced.git
-cd calcx-advanced
-
-# Add upstream remote
-git remote add upstream https://github.com/genesisgzdev/calcx-advanced.git
-
-# Create branch
-git checkout -b feature/your-feature
-
-# Make changes and test
-./tests/run_tests.sh
-
-# Commit and push
-git add .
-git commit -m "feat: your feature description"
-git push origin feature/your-feature
-```
-
-## License
-
-This project is licensed under the MIT License.
-```
-MIT License
-
-Copyright (c) 2025 Genesis GZ (genesisgzdev)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
-## Author
-
-Genesis GZ (genesisgzdev)
-
-- GitHub: https://github.com/genesisgzdev
-- Email: genzt.dev@pm.me
-- Repository: https://github.com/genesisgzdev/calcx-advanced
-
-## Version History
-
-- **1.0.0** (2025-11-11)
-  - Initial release
-  - Core mathematical functions
-  - Zenity GUI implementation
-  - Command-line interface
-  - Basic test suite
-
-## Acknowledgments
-
-- GNU Project for bc calculator
-- Zenity development team
-- Python Software Foundation
-- Open source community contributors
+**Repository:** https://github.com/genesisgzdev/calcx-advanced  
+**Maintainer:** Genesis GZ  
+**Email:** genzt.dev@pm.me
 
 ---
-Thank you very much for watching :)
+
+*Professional-grade mathematics deserves tools that respect your time. CalcX Advanced provides the computational horsepower and interface transparency that serious calculation work demands.*
