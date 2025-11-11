@@ -397,7 +397,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 **Genesis GZ** - Full Stack Developer  
 **GitHub**: [@genesisgzdev](https://github.com/genesisgzdev)  
 **Email**: genzt.dev@pm.me  
-**Location**: Uruguay  
 
 ## Version History
 
