@@ -638,5 +638,4 @@ Genesis GZ (genesisgzdev)
 - Open source community contributors
 
 ---
-
-For more information, visit the project repository at https://github.com/genesisgzdev/calcx-advanced
+Thank you very much for watching :)
