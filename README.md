@@ -1,43 +1,79 @@
-# 🧮 CalcX Advanced
+# CalcX Advanced
 
-Professional Mathematical Calculator with Zenity GUI
+Professional mathematical calculator with Zenity GUI interface
 
-[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/genesisgzdev/calcx-advanced)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Shell](https://img.shields.io/badge/shell-bash%204.0+-orange.svg)](https://www.gnu.org/software/bash/)
+## Description
 
-## Features
+CalcX Advanced is a comprehensive mathematical calculator featuring:
+- Graphical user interface using Zenity
+- Command-line and interactive shell modes
+- Scientific and trigonometric functions
+- Complex number arithmetic
+- Matrix operations and determinants
+- Unit conversion system
+- Persistent calculation history
 
-- 🖥️ **Zenity GUI Interface**
-- 🔢 **Multiple Input Methods** (GUI, command line, interactive)
-- 🔬 **Scientific Functions** (trigonometric, logarithmic, exponential)
-- 📊 **Complex Numbers Support**
-- 🔄 **Unit Conversions**
-- 💾 **Persistent History**
-- 🎨 **Color-coded Output**
-- ⚡ **Cross-platform** (Linux, Windows WSL/Git Bash, macOS)
+## Requirements
+
+- Bash 4.0+
+- Python 3.6+
+- Zenity
+- BC calculator
 
 ## Installation
 ```bash
-cat > LICENSE << 'EOF'
-MIT License
+git clone https://github.com/genesisgzdev/calcx-advanced.git
+cd calcx-advanced
+chmod +x scripts/install.sh
+./scripts/install.sh
+```
 
-Copyright (c) 2024 Genesis GZ (genesisgzdev)
+## Usage
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+### GUI Mode
+```bash
+./calcx.sh
+```
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+### Command Line
+```bash
+./calcx.sh "2 + 2"
+./calcx.sh "sqrt(16)"
+```
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+### Interactive Shell
+```bash
+./calcx.sh --shell
+```
+
+## Project Structure
+```
+calcx-advanced/
+├── src/                 # Source code
+├── lib/                 # Function libraries
+├── config/              # Configuration files
+├── scripts/             # Installation scripts
+├── tests/               # Test suite
+├── examples/            # Usage examples
+└── docs/                # Documentation
+```
+
+## Testing
+```bash
+cd tests
+./run_tests.sh
+```
+
+## Author
+
+Genesis GZ (genesisgzdev)
+- Email: genzt.dev@pm.me
+- GitHub: https://github.com/genesisgzdev
+
+## License
+
+MIT License - see LICENSE file for details
+
+## Version
+
+1.0.0
