@@ -425,4 +425,4 @@ Special thanks to all contributors who have helped improve CalcX Advanced throug
 
 ---
 
-*Precision meets simplicity. CalcX Advanced transforms complex calculations into elegant
+Precision meets simplicity. CalcX Advanced transforms complex calculations into elegant
