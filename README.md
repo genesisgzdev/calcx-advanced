@@ -1,4 +1,3 @@
-markdown# CalcX Advanced
 
 A high-performance mathematical computation engine built with Bash and Python, featuring both graphical and command-line interfaces for advanced scientific calculations.
 
