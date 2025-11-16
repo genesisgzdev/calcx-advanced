@@ -1,5 +1,3 @@
-Tienes razón, voy a reescribirlo con líneas cortas y bien formateado:
-
 # CalcX Advanced
 
 High-performance scientific calculator built with Bash and arbitrary 
