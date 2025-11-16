@@ -394,8 +394,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ## Author
 
-**Genesis GZ** - Full Stack Developer  
-**GitHub**: [@genesisgzdev](https://github.com/genesisgzdev)  
+**Genesis GZ** - Full Stack Developer   
 **Email**: genzt.dev@pm.me  
 
 ## Version History
