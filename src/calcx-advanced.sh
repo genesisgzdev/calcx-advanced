@@ -20,7 +20,7 @@ BG_BLUE='\033[44m'
 HISTORIAL=()
 
 # File path for persistent history storage across sessions
-HIST_FILE="$HOME/.calc_ultra_history.log"
+HIST_FILE="$HOME/.calcx_history.log"
 
 # Maximum number of history entries to keep in memory and on disk
 MAX_HISTORIAL=20
@@ -171,7 +171,7 @@ configure_precision() {
 show_header() {
     clear
     echo -e "${BLUE}╔═══════════════════════════════════════════════════════╗${RESET}"
-    echo -e "${BLUE}║    ${MAGENTA}ADVANCED CALCULATOR ${BLUE}   ║${RESET}"
+    echo -e "${BLUE}║           ${MAGENTA}CALCULADORA ${BLUE}                             ║${RESET}"
     echo -e "${BLUE}╠═══════════════════════════════════════════════════════╣${RESET}"
     if [ "$PRECISION" -eq -1 ]; then
         echo -e "${BLUE}║ ${CYAN}Precision:${RESET} general (%g)                            ║"
