@@ -335,10 +335,9 @@ The software is provided "as is" without warranty. Users are responsible for val
 ## Contact Information and Support
 
 For questions, bug reports, suggestions, or contributions, reach out through the project repository or contact the maintainer directly.
-
-**Repository:** https://github.com/genesisgzdev/calcx-advanced  
-**Primary Developer:** Genesis GZ  
-**Professional Contact:** genzt.dev@pm.me
+ 
+**Primary Developer:** Genesis  
+**Contact:** genzt.dev@pm.me
 
 ## Roadmap and Future Development
 
