@@ -181,9 +181,8 @@ CalcX Advanced is distributed under the MIT License. You're free to use, modify,
 The software is provided without warranty. Users validate calculation results for critical applications. Implementations use established numerical algorithms and standard mathematical libraries.
 
 For questions, bug reports, or suggestions, reach out through the project repository:
-
-**Repository:** https://github.com/genesisgzdev/calcx-advanced  
-**Developer:** Genesis GZ  
+ 
+**Developer:** Genesis
 **Email:** genzt.dev@pm.me
 
 ## Mathematical Foundations
@@ -204,4 +203,4 @@ CalcX Advanced implements proven numerical methods. The **quadratic solver** use
 
 ---
 
-*Professional-grade mathematics deserves tools that respect both your time and your computational requirements. CalcX Advanced delivers the horsepower and transparency that serious calculation work demands.*
+*Professional-grade mathematics deserves tools that respect both your time and your computational requirements. CalcX delivers the horsepower and transparency that serious calculation work demands.*
