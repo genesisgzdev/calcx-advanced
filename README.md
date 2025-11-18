@@ -183,6 +183,7 @@ The software is provided without warranty. Users validate calculation results fo
 For questions, bug reports, or suggestions, reach out through the project repository:
  
 **Developer:** Genesis
+
 **Email:** genzt.dev@pm.me
 
 ## Mathematical Foundations
