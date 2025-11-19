@@ -11,10 +11,8 @@ BOLD='\033[1m'
 RESET='\033[0m'
 BG_BLUE='\033[44m'
 
-# ==============================================================================
 # GLOBAL VARIABLES
 # Configuration variables used throughout the calculator
-# ==============================================================================
 
 # Array to store calculation history (last MAX_HISTORIAL entries)
 HISTORIAL=()
@@ -29,11 +27,10 @@ MAX_HISTORIAL=20
 # -1 uses general format (%g), positive integers specify significant figures
 PRECISION=6
 
-# ==============================================================================
 # PYTHON DETECTION FOR CROSS-PLATFORM SUPPORT
 # Detect correct Python command (python vs python3) based on platform
 # Windows uses 'python', Unix-like systems typically use 'python3'
-# ==============================================================================
+
 detect_python_command() {
     # Try python3 first (Unix standard)
     if command -v python3 >/dev/null 2>&1; then
@@ -60,11 +57,10 @@ detect_python_command() {
 # Set the PYTHON_CMD variable for use throughout the script
 PYTHON_CMD=$(detect_python_command)
 
-# ==============================================================================
 # COMMAND-LINE MODE
 # If arguments are provided, evaluate them as a mathematical expression
 # and exit immediately (non-interactive mode)
-# ==============================================================================
+
 if [ "$#" -gt 0 ]; then
     expr="$*"
 
@@ -105,10 +101,9 @@ PYEOF
     exit 1
 fi
 
-# ==============================================================================
 # HISTORY LOADING
 # Load persistent history from file if it exists
-# ==============================================================================
+
 if [ -f "$HIST_FILE" ]; then
     while IFS= read -r __line; do
         HISTORIAL+=("$__line")
@@ -120,10 +115,8 @@ if [ -f "$HIST_FILE" ]; then
     done
 fi
 
-# ==============================================================================
 # UTILITY FUNCTIONS
 # General helper functions used throughout the calculator
-# ==============================================================================
 
 # Limit history array size by removing oldest entries
 limit_history() {
@@ -171,7 +164,7 @@ configure_precision() {
 show_header() {
     clear
     echo -e "${BLUE}╔═══════════════════════════════════════════════════════╗${RESET}"
-    echo -e "${BLUE}║    ${MAGENTA}ADVANCED CALCULATOR ${BLUE}   ║${RESET}"
+    echo -e "${BLUE}║    ${MAGENTA} CALCULATOR ${BLUE}   ║${RESET}"
     echo -e "${BLUE}╠═══════════════════════════════════════════════════════╣${RESET}"
     if [ "$PRECISION" -eq -1 ]; then
         echo -e "${BLUE}║ ${CYAN}Precision:${RESET} general (%g)                            ║"
@@ -221,10 +214,8 @@ clear_history() {
     wait_to_continue
 }
 
-# ==============================================================================
 # EQUATION SOLVERS
 # Functions for solving various types of equations
-# ==============================================================================
 
 # Solve quadratic equation: ax² + bx + c = 0
 # Uses the quadratic formula with discriminant analysis
@@ -556,10 +547,8 @@ solve_newton_raphson() {
     wait_to_continue
 }
 
-# ==============================================================================
 # MATRIX OPERATIONS (2x2 and 3x3 matrices)
 # Functions for matrix multiplication, determinant, inverse, and linear systems
-# ==============================================================================
 
 # Multiply two matrices of the same dimension (2x2 or 3x3)
 # Uses standard matrix multiplication algorithm: C[i,j] = Σ A[i,k] * B[k,j]
@@ -993,10 +982,8 @@ solve_linear_system() {
     wait_to_continue
 }
 
-# ==============================================================================
 # COMPLEX NUMBER OPERATIONS
 # Comprehensive complex arithmetic including basic operations and special functions
-# ==============================================================================
 
 # Add two complex numbers: (a₁ + b₁i) + (a₂ + b₂i) = (a₁+a₂) + (b₁+b₂)i
 complex_add() {
@@ -1405,10 +1392,8 @@ complex_power() {
     wait_to_continue
 }
 
-# ==============================================================================
 # NUMERICAL CALCULUS
 # Numerical integration, differentiation, and ODE solving
-# ==============================================================================
 
 # Numerical integration using Simpson's rule (more accurate than trapezoid)
 # Simpson's rule: ∫f(x)dx ≈ (h/3)[f(x₀) + 4f(x₁) + 2f(x₂) + 4f(x₃) + ... + f(xₙ)]
@@ -1629,10 +1614,8 @@ PYEOF
     wait_to_continue
 }
 
-# ==============================================================================
 # STATISTICS AND COMBINATORICS
 # Descriptive statistics, permutations, combinations, and binomial distribution
-# ==============================================================================
 
 # Calculate descriptive statistics for a dataset
 # Includes: mean, median, standard deviation, min, max
@@ -1809,10 +1792,9 @@ PYEOF
     wait_to_continue
 }
 
-# ==============================================================================
 # DISCRETE FOURIER TRANSFORM (DFT)
 # Compute DFT of a sequence using the definition (not FFT)
-# ==============================================================================
+
 discrete_fourier_transform() {
     echo -e "\n${YELLOW}DISCRETE FOURIER TRANSFORM${RESET}"
     echo "Enter sequence values separated by spaces:"
@@ -1870,10 +1852,8 @@ PYEOF
     wait_to_continue
 }
 
-# ==============================================================================
 # NUMBER THEORY
 # Prime factorization and base conversion
-# ==============================================================================
 
 # Prime factorization of an integer
 factorize_number() {
@@ -1994,10 +1974,8 @@ PYEOF
     wait_to_continue
 }
 
-# ==============================================================================
 # SPECIAL FUNCTIONS
 # Factorial, GCD, LCM
-# ==============================================================================
 
 # Calculate factorial, including Gamma function for non-integers
 extended_factorial() {
@@ -2078,10 +2056,8 @@ gcd_lcm() {
     wait_to_continue
 }
 
-# ==============================================================================
 # PACKAGE CREATION
 # Create .deb and .pkg.tar.zst packages for distribution
-# ==============================================================================
 
 # Create Debian package (.deb)
 create_deb_package() {
@@ -2219,10 +2195,8 @@ EOF
     wait_to_continue
 }
 
-# ==============================================================================
 # HISTORY FILE OPERATIONS
 # Save and load history to/from custom files
-# ==============================================================================
 
 # Save current history to a custom file
 save_history_to_file() {
@@ -2275,10 +2249,9 @@ load_history_from_file() {
     wait_to_continue
 }
 
-# ==============================================================================
 # INTERACTIVE INTERFACE (FZF/GUM)
-# Alternative menu interface using fzf or gum for fuzzy searching
-# ==============================================================================
+# Alternative menu interface using fzf or gum for fuzzy searching 
+
 interactive_interface() {
     # Check if fzf is available
     if command -v fzf >/dev/null 2>&1; then
@@ -2356,10 +2329,8 @@ interactive_interface() {
     fi
 }
 
-# ==============================================================================
 # SUBMENU FUNCTIONS
 # Organize related operations into submenus
-# ==============================================================================
 
 # Display main menu
 show_main_menu() {
