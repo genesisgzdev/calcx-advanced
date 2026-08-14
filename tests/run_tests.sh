@@ -1,12 +1,6 @@
-#!/bin/bash
-echo "================================"
-echo "CalcX Advanced - Test Suite"
-echo "================================"
-for test in test_*.sh; do
-    if [ -f "$test" ]; then
-        echo "Running: $test"
-        bash "$test"
-        echo "--------------------------------"
-    fi
-done
-echo "All tests completed!"
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+cd "$ROOT"
+python3 -m unittest discover -s tests -p 'test_*.py' -v
+(cd tests && bash test_basic.sh)

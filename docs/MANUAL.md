@@ -1,51 +1,21 @@
-# CalcX Advanced User Manual
+# CalcX Advanced manual
 
-## Table of Contents
-1. Installation
-2. Configuration
-3. Basic Usage
-4. Advanced Features
-5. Troubleshooting
+## Launching
 
-## Installation
+Run `./calcx.sh` from the repository or install the package with `pipx install .` and use `calcx` globally. With no expression CalcX starts its REPL. In scripts, always quote the expression so the shell cannot expand operators first.
 
-### Linux
-```bash
-sudo apt-get install zenity bc python3
-git clone https://github.com/genesisgzdev/calcx-advanced.git
-cd calcx-advanced
-./scripts/install.sh
-```
+## Expressions
 
-### Windows (Git Bash)
-```bash
-git clone https://github.com/genesisgzdev/calcx-advanced.git
-cd calcx-advanced
-chmod +x calcx.sh
-./calcx.sh
-```
+Arithmetic uses `+`, `-`, `*`, `/`, `%`, `//` and `^`. Use `pi`, `e`, `tau`, `i`, `sqrt`, `sin`, `cos`, `tan`, `log`, `ln`, `log10`, `exp`, `abs`, `factorial`, `floor` and `ceil`. Invalid names, attributes, imports, comprehensions and keyword arguments are rejected before calculation.
 
-## Configuration
+## Automation
 
-Edit `config/calcx.conf` to customize settings.
+`--json` emits a single JSON object on success. Errors go to stderr in text mode, or become an `error`/`message` JSON object in JSON mode. Exit code `0` means success; expected user or domain errors return `2`.
 
-## Basic Usage
+## Persistence
 
-Launch the calculator:
-```bash
-calcx
-```
-
-## Advanced Features
-
-- Matrix operations
-- Complex numbers
-- Unit conversions
-- Statistical functions
+Set `CALCX_HISTORY` for a custom history file and `CALCX_HISTORY_LIMIT` for its bound. The REPL supports `history` and `clear`. Files are created with parent directories and replaced atomically.
 
 ## Troubleshooting
 
-If you encounter issues:
-1. Check dependencies are installed
-2. Verify Python version
-3. Check file permissions
+Use `python3 --version`, `python3 -m calcx --version`, and `python3 -m compileall -q calcx` to separate installation from runtime issues. If a global `calcx` shadows the checkout, invoke `./calcx.sh` or `python3 -m calcx` from the project root.

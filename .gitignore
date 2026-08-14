@@ -12,3 +12,12 @@ __pycache__/
 *.pyc
 venv/
 .env
+# Python and build artifacts
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.venv/
+*.deb
