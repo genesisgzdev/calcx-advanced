@@ -163,16 +163,15 @@ configure_precision() {
 # Display the calculator header with branding and current settings
 show_header() {
     clear
-    echo -e "${BLUE}╭──────────────────────────────────────────────────────────────╮${RESET}"
-    printf "${BLUE}│${RESET}                         ${MAGENTA}${BOLD}CALCX ADVANCED${RESET}                       ${BLUE}│${RESET}\n"
-    printf "${BLUE}│${RESET}              ${CYAN}Scientific terminal workspace${RESET}                  ${BLUE}│${RESET}\n"
-    echo -e "${BLUE}├──────────────────────────────────────────────────────────────┤${RESET}"
+    printf "\n                         ${MAGENTA}${BOLD}CALCX ADVANCED${RESET}\n"
+    printf "                    ${CYAN}Scientific calculator${RESET}\n"
+    printf "──────────────────────────────────────────────────────────────\n"
     if [ "$PRECISION" -eq -1 ]; then
-        printf "${BLUE}│${RESET}  ${CYAN}Precision${RESET}  general (%g)   ${CYAN}Mode${RESET}  interactive                    ${BLUE}│${RESET}\n"
+        printf "${CYAN}Precision${RESET}: general (%%g)\n"
     else
-        printf "${BLUE}│${RESET}  ${CYAN}Precision${RESET}  %-3s significant digits   ${CYAN}Mode${RESET}  interactive          ${BLUE}│${RESET}\n" "$PRECISION"
+        printf "${CYAN}Precision${RESET}: %s significant digits\n" "$PRECISION"
     fi
-    echo -e "${BLUE}╰──────────────────────────────────────────────────────────────╯${RESET}"
+    printf "──────────────────────────────────────────────────────────────\n"
 }
 
 # Add an entry to the calculation history (both in-memory and persistent)

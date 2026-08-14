@@ -2,6 +2,13 @@
 
 All notable changes to CalcX Advanced are documented here.
 
+## [2.0.3] - 2026-08-14
+
+### Changed
+
+- Simplified the interactive header into a balanced, centered text treatment.
+- Removed the boxed cyberpunk-style status panel and redundant mode label.
+
 ## [2.0.2] - 2026-08-14
 
 ### Changed
