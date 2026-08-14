@@ -2,6 +2,14 @@
 
 All notable changes to CalcX Advanced are documented here.
 
+## [2.0.1] - 2026-08-14
+
+### Fixed
+
+- Restored the original menu-driven interface when `./calcx.sh` is invoked without arguments.
+- Kept the safe Python engine for expression mode and exposed the modern REPL through `--interactive`.
+- Clarified the three supported entry modes in the README and manual.
+
 ## [2.0.0] - 2026-08-14
 
 ### Added

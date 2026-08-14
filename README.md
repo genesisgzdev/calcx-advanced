@@ -26,6 +26,8 @@ cd calcx-advanced
 ./calcx.sh 'sqrt(144)'
 ```
 
+Running `./calcx.sh` without arguments opens the original menu-driven interface. Use an expression for scripting, or `--interactive` for the newer Python REPL.
+
 For an isolated command available everywhere:
 
 ```bash
