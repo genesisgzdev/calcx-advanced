@@ -2,6 +2,14 @@
 
 All notable changes to CalcX Advanced are documented here.
 
+## [2.0.2] - 2026-08-14
+
+### Changed
+
+- Replaced the stacked legacy menu with a two-column terminal dashboard.
+- Grouped tools into Equations, Linear Algebra, Numerical Lab and Data & Number Theory workspaces.
+- Added centered branding, precision status and compact keyboard hints without changing option numbers.
+
 ## [2.0.1] - 2026-08-14
 
 ### Fixed

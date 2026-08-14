@@ -163,15 +163,16 @@ configure_precision() {
 # Display the calculator header with branding and current settings
 show_header() {
     clear
-    echo -e "${BLUE}╔═══════════════════════════════════════════════════════╗${RESET}"
-    echo -e "${BLUE}║    ${MAGENTA} CALCULATOR ${BLUE}   ║${RESET}"
-    echo -e "${BLUE}╠═══════════════════════════════════════════════════════╣${RESET}"
+    echo -e "${BLUE}╭──────────────────────────────────────────────────────────────╮${RESET}"
+    printf "${BLUE}│${RESET}                         ${MAGENTA}${BOLD}CALCX ADVANCED${RESET}                       ${BLUE}│${RESET}\n"
+    printf "${BLUE}│${RESET}              ${CYAN}Scientific terminal workspace${RESET}                  ${BLUE}│${RESET}\n"
+    echo -e "${BLUE}├──────────────────────────────────────────────────────────────┤${RESET}"
     if [ "$PRECISION" -eq -1 ]; then
-        echo -e "${BLUE}║ ${CYAN}Precision:${RESET} general (%g)                            ║"
+        printf "${BLUE}│${RESET}  ${CYAN}Precision${RESET}  general (%g)   ${CYAN}Mode${RESET}  interactive                    ${BLUE}│${RESET}\n"
     else
-        printf "${BLUE}║ ${CYAN}Precision:${RESET} %2s significant figure(s)                ║${RESET}\n" "$PRECISION"
+        printf "${BLUE}│${RESET}  ${CYAN}Precision${RESET}  %-3s significant digits   ${CYAN}Mode${RESET}  interactive          ${BLUE}│${RESET}\n" "$PRECISION"
     fi
-    echo -e "${BLUE}╚═══════════════════════════════════════════════════════╝${RESET}"
+    echo -e "${BLUE}╰──────────────────────────────────────────────────────────────╯${RESET}"
 }
 
 # Add an entry to the calculation history (both in-memory and persistent)
@@ -2334,21 +2335,23 @@ interactive_interface() {
 
 # Display main menu
 show_main_menu() {
-    echo -e "\n${YELLOW}MAIN MENU${RESET}"
-    echo "1) Solve quadratic equation"
-    echo "2) Solve cubic equation"
-    echo "3) Find root (Newton-Raphson)"
-    echo "4) Matrix operations"
-    echo "5) Complex number operations"
-    echo "6) Numerical calculus"
-    echo "7) Statistics and combinatorics"
-    echo "8) Discrete Fourier Transform"
-    echo "9) Number theory and bases"
-    echo "10) Show history"
-    echo "11) Clear history"
-    echo "12) Configure precision"
-    echo "13) Other utilities"
-    echo "q) Quit"
+    echo
+    printf "${BOLD}${YELLOW}  WORKSPACES${RESET}  ${CYAN}Choose a tool${RESET}\n\n"
+    printf "${BLUE}  ┌─────────────────────────────┐  ┌─────────────────────────────┐${RESET}\n"
+    printf "${BLUE}  │${RESET} ${MAGENTA}${BOLD}EQUATIONS${RESET}                   ${BLUE}│  │${RESET} ${MAGENTA}${BOLD}LINEAR ALGEBRA${RESET}              ${BLUE}│${RESET}\n"
+    printf "${BLUE}  │${RESET}  ${GREEN}[1]${RESET} Quadratic solver       ${BLUE}│  │${RESET}  ${GREEN}[4]${RESET} Matrix operations       ${BLUE}│${RESET}\n"
+    printf "${BLUE}  │${RESET}  ${GREEN}[2]${RESET} Cubic solver            ${BLUE}│  │${RESET}  ${GREEN}[5]${RESET} Complex numbers         ${BLUE}│${RESET}\n"
+    printf "${BLUE}  │${RESET}  ${GREEN}[3]${RESET} Newton-Raphson          ${BLUE}│  │${RESET}                             ${BLUE}│${RESET}\n"
+    printf "${BLUE}  └─────────────────────────────┘  └─────────────────────────────┘${RESET}\n"
+    printf "${BLUE}  ┌─────────────────────────────┐  ┌─────────────────────────────┐${RESET}\n"
+    printf "${BLUE}  │${RESET} ${MAGENTA}${BOLD}NUMERICAL LAB${RESET}              ${BLUE}│  │${RESET} ${MAGENTA}${BOLD}DATA & NUMBER THEORY${RESET}        ${BLUE}│${RESET}\n"
+    printf "${BLUE}  │${RESET}  ${GREEN}[6]${RESET} Numerical calculus      ${BLUE}│  │${RESET}  ${GREEN}[9]${RESET} Number theory & bases  ${BLUE}│${RESET}\n"
+    printf "${BLUE}  │${RESET}  ${GREEN}[7]${RESET} Statistics              ${BLUE}│  │${RESET}  ${GREEN}[10]${RESET} Calculation history   ${BLUE}│${RESET}\n"
+    printf "${BLUE}  │${RESET}  ${GREEN}[8]${RESET} Discrete Fourier        ${BLUE}│  │${RESET}  ${GREEN}[11]${RESET} Clear history         ${BLUE}│${RESET}\n"
+    printf "${BLUE}  └─────────────────────────────┘  └─────────────────────────────┘${RESET}\n"
+    printf "${BLUE}  ┌─────────────────────────────────────────────────────────────┐${RESET}\n"
+    printf "${BLUE}  │${RESET} ${GREEN}[12]${RESET} Configure precision    ${GREEN}[13]${RESET} Utilities    ${GREEN}[q]${RESET} Quit           ${BLUE}│${RESET}\n"
+    printf "${BLUE}  └─────────────────────────────────────────────────────────────┘${RESET}\n\n"
 }
 
 # Matrix operations submenu
