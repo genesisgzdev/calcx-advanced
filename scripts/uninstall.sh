@@ -1,11 +1,5 @@
-#!/bin/bash
-echo "Uninstalling CalcX Advanced..."
-sudo rm -f /usr/local/bin/calcx
-read -p "Remove configuration files? (y/n) " -n 1 -r
-echo
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-    rm -rf "$HOME/.config/calcx"
-    rm -f "$HOME/.calcx_history"
-    rm -f "$HOME/.calcx.log"
-fi
-echo "✓ CalcX Advanced uninstalled"
+#!/usr/bin/env bash
+set -euo pipefail
+python3 -m pip uninstall -y calcx-advanced 2>/dev/null || true
+echo "CalcX Advanced package removed. User configuration and history were preserved."
+echo "Remove them explicitly if desired: ${XDG_CONFIG_HOME:-$HOME/.config}/calcx and ${XDG_STATE_HOME:-$HOME/.local/state}/calcx"
