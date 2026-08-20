@@ -2,6 +2,13 @@
 
 All notable changes to CalcX Advanced are documented here.
 
+## [2.0.4] - 2026-08-20
+
+### Changed
+
+- Refreshed the public README and release metadata around the current CLI and interactive behavior.
+- Aligned the package version exposed by `calcx --version` with the published release.
+
 ## [2.0.3] - 2026-08-14
 
 ### Changed
