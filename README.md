@@ -1,34 +1,37 @@
 # CalcX Advanced
 
-CalcX Advanced is a safe scientific calculator for Linux, macOS and WSL. It keeps the familiar `calcx.sh` entry point while using a tested Python engine for expressions, complex numbers, matrices and numerical methods.
+CalcX is a small scientific calculator for the terminal. It keeps the simple `calcx.sh` entry point, but the expression engine now runs through a restricted Python AST instead of evaluating arbitrary code.
 
-## Why this version is different
+It works on Linux, macOS and WSL and is useful both at the prompt and inside scripts.
 
-The expression language is parsed with Python's AST and an explicit allow-list. It never calls `eval`, `exec`, a shell, or a user-provided command. Errors are typed, sent to `stderr`, and return a non-zero status so CalcX can be used safely in scripts.
+[![CI](https://github.com/genesisgzdev/calcx-advanced/actions/workflows/ci.yml/badge.svg)](https://github.com/genesisgzdev/calcx-advanced/actions/workflows/ci.yml)
+[![Latest release](https://img.shields.io/github/v/release/genesisgzdev/calcx-advanced)](https://github.com/genesisgzdev/calcx-advanced/releases)
+[![License](https://img.shields.io/github/license/genesisgzdev/calcx-advanced)](LICENSE)
 
-```text
-CLI (calcx / calcx.sh)
-        |
-configuration + history (XDG)
-        |
-safe AST evaluator + numerical operations
-        |
-Decimal-compatible display / optional mpmath extension
-```
+## What it can do
 
-## Install
+- Decimal arithmetic with configurable precision
+- Complex numbers, matrices and numerical methods
+- Trigonometric, logarithmic, hyperbolic and rounding functions
+- JSON output for scripts and other tools
+- A menu interface, a direct CLI and an interactive Python REPL
+- XDG-based configuration and bounded atomic history storage
 
-For a checkout:
+The core package has no mandatory third-party dependency. `mpmath` can be added when arbitrary-precision functions are needed.
+
+## Quick start
 
 ```bash
 git clone https://github.com/genesisgzdev/calcx-advanced.git
 cd calcx-advanced
+
 ./calcx.sh 'sqrt(144)'
+./calcx.sh --json '2 + 2'
+./calcx.sh --precision 50 '1/7'
+./calcx.sh --interactive
 ```
 
-Running `./calcx.sh` without arguments opens the original menu-driven interface. Use an expression for scripting, or `--interactive` for the newer Python REPL.
-
-For an isolated command available everywhere:
+To install the `calcx` command with `pipx`:
 
 ```bash
 python3 -m pip install --user pipx
@@ -36,35 +39,17 @@ pipx install .
 calcx '2^10'
 ```
 
-Optional arbitrary-precision functions:
+`^` is accepted as exponentiation. Constants include `pi`, `e`, `tau` and `i`.
 
-```bash
-pipx inject calcx-advanced mpmath
-```
+## A note about safety
 
-## CLI
+Expressions are parsed with Python's AST and checked against an explicit allow-list. CalcX does not call `eval`, `exec`, a shell or a user-provided command while evaluating an expression. Invalid expressions are reported on `stderr` and return a non-zero exit code.
 
-```bash
-calcx '2^10'
-calcx 'sin(pi/2)'
-calcx 'sqrt(-4)'
-calcx --precision 50 '1/7'
-calcx --json '2 + 2'
-calcx --interactive
-calcx --version
-```
-
-JSON output is designed for automation:
-
-```json
-{"expression": "2 + 2", "result": "4", "precision": 28}
-```
-
-Supported functions include trigonometry, hyperbolic functions, logarithms, exponentiation, factorial, rounding and complex arithmetic. Constants are `pi`, `e`, `tau` and `i`; `^` is accepted as exponentiation.
+That makes the CLI suitable for automation, but it is still a calculator. Results used in safety-critical or financial work should be checked independently.
 
 ## Configuration and history
 
-Configuration is read from `$XDG_CONFIG_HOME/calcx/config.env`, or `~/.config/calcx/config.env`:
+The optional config file is read from `$XDG_CONFIG_HOME/calcx/config.env` or `~/.config/calcx/config.env`:
 
 ```text
 PRECISION=40
@@ -72,7 +57,7 @@ HISTORY_LIMIT=500
 HISTORY_FILE=~/.local/state/calcx/history
 ```
 
-Environment variables such as `CALCX_PRECISION`, `CALCX_HISTORY_LIMIT` and `CALCX_HISTORY` override the file; command-line arguments override both. History is written atomically under `~/.local/state/calcx` by default.
+`CALCX_PRECISION`, `CALCX_HISTORY_LIMIT` and `CALCX_HISTORY` override the file. Command-line options take precedence over both. History is stored under `~/.local/state/calcx` by default.
 
 ## Development
 
@@ -83,11 +68,7 @@ python3 -m compileall -q calcx
 bash -n calcx.sh
 ```
 
-The optional `mpmath` dependency is intentionally not required for the core install. CI tests Ubuntu and macOS across supported Python versions and builds the project from `pyproject.toml`.
-
-## Project status
-
-Version 2.0.3 is the safe-engine migration release. The legacy Bash implementation remains in `src/` for auditability but is no longer the runtime path. Numerical output should still be independently checked for safety-critical work.
+The project is currently at version `2.0.3`. The old Bash implementation remains in `src/` for reference, while the Python package is the runtime used by the modern CLI path.
 
 ## License
 
