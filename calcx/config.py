@@ -5,6 +5,10 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
+class ConfigError(ValueError):
+    """Raised when an environment or config-file value is invalid."""
+
+
 @dataclass(frozen=True)
 class Config:
     precision: int = 28
@@ -22,6 +26,10 @@ class Config:
                 if line.strip() and not line.lstrip().startswith("#") and "=" in line:
                     key, value = line.split("=", 1)
                     values[key.strip()] = value.strip()
-        selected_precision = precision if precision is not None else int(os.environ.get("CALCX_PRECISION", values.get("PRECISION", 28)))
+        try:
+            selected_precision = precision if precision is not None else int(os.environ.get("CALCX_PRECISION", values.get("PRECISION", 28)))
+            selected_history_limit = int(os.environ.get("CALCX_HISTORY_LIMIT", values.get("HISTORY_LIMIT", 1000)))
+        except (TypeError, ValueError) as exc:
+            raise ConfigError("invalid numeric configuration; check CALCX_PRECISION and CALCX_HISTORY_LIMIT") from exc
         history = os.environ.get("CALCX_HISTORY", values.get("HISTORY_FILE", str(cls.history_file)))
-        return cls(max(1, min(selected_precision, 1000)), max(1, int(os.environ.get("CALCX_HISTORY_LIMIT", values.get("HISTORY_LIMIT", 1000)))), history_file=Path(history).expanduser())
+        return cls(max(1, min(selected_precision, 1000)), max(1, selected_history_limit), history_file=Path(history).expanduser())

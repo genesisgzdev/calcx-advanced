@@ -87,7 +87,7 @@ The optional `mpmath` dependency is intentionally not required for the core inst
 
 ## Project status
 
-Version 2.0.0 is the safe-engine migration release. The legacy Bash implementation remains in `src/` for auditability but is no longer the runtime path. Numerical output should still be independently checked for safety-critical work.
+Version 2.0.3 is the safe-engine migration release. The legacy Bash implementation remains in `src/` for auditability but is no longer the runtime path. Numerical output should still be independently checked for safety-critical work.
 
 ## License
 

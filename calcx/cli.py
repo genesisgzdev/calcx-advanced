@@ -5,7 +5,7 @@ import json
 import sys
 
 from . import __version__
-from .config import Config
+from .config import Config, ConfigError
 from .engine import evaluate, format_value
 from .errors import CalcXError
 from .history import History
@@ -51,5 +51,9 @@ def repl(config: Config) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     args = _parser().parse_args(argv)
-    config = Config.load(args.precision)
+    try:
+        config = Config.load(args.precision)
+    except ConfigError as exc:
+        print(f"calcx: {exc}", file=sys.stderr)
+        return 2
     return repl(config) if args.interactive or args.expression is None else calculate(args.expression, config, args.json)
