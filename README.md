@@ -70,6 +70,8 @@ bash -n calcx.sh
 
 The project is currently at version `2.0.4`. The old Bash implementation remains in `src/` for reference, while the Python package is the runtime used by the modern CLI path.
 
+The launch paths and validation boundary are mapped in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
