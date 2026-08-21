@@ -2,6 +2,10 @@
 
 Este documento sigue las dos entradas que existen en el repositorio y no mezcla el menú Bash de compatibilidad con el motor Python moderno.
 
+## Cómo leerlo
+
+La primera figura responde qué se ejecuta. La secuencia responde qué ocurre con una expresión. La tabla responde qué puede cambiar el resultado. No muestra cada función matemática porque eso no ayuda a entender el sistema; esas funciones están en el código y en el manual.
+
 ## 1. Mapa de componentes
 
 ~~~mermaid

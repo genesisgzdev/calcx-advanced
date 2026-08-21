@@ -1,25 +1,42 @@
 # CalcX Advanced
 
-CalcX is a small scientific calculator for the terminal. It keeps the simple `calcx.sh` entry point, but the expression engine now runs through a restricted Python AST instead of evaluating arbitrary code.
+Calculadora científica de terminal para personas y scripts. La ruta de expresiones usa un AST de Python con allow-list explícita, no `eval`, y devuelve texto o JSON determinista.
 
-It works on Linux, macOS and WSL and is useful both at the prompt and inside scripts.
+En 30 segundos: ejecuta `./calcx.sh 'sqrt(144)'` para una cuenta, `--json` para automatización y `--interactive` para la REPL Python. Sin expresión, el wrapper conserva el menú Bash histórico. El núcleo no necesita dependencias externas obligatorias.
 
 [![CI](https://github.com/genesisgzdev/calcx-advanced/actions/workflows/ci.yml/badge.svg)](https://github.com/genesisgzdev/calcx-advanced/actions/workflows/ci.yml)
 [![Latest release](https://img.shields.io/github/v/release/genesisgzdev/calcx-advanced)](https://github.com/genesisgzdev/calcx-advanced/releases)
 [![License](https://img.shields.io/github/license/genesisgzdev/calcx-advanced)](LICENSE)
 
-## What it can do
+## Qué está respaldado hoy
 
 - Decimal arithmetic with configurable precision
 - Complex numbers, matrices and numerical methods
 - Trigonometric, logarithmic, hyperbolic and rounding functions
 - JSON output for scripts and other tools
 - A menu interface, a direct CLI and an interactive Python REPL
-- XDG-based configuration and bounded atomic history storage
+- configuración XDG e historial acotado con escritura atómica
 
-The core package has no mandatory third-party dependency. `mpmath` can be added when arbitrary-precision functions are needed.
+La evidencia es el código de [`calcx/`](calcx/), los tests de [`tests/`](tests/) y los checks de shell listados más abajo. La arquitectura completa, con las dos rutas de entrada y sus límites, está en [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
-## Quick start
+## Flujo principal
+
+```mermaid
+flowchart LR
+    A[argumentos] --> B{hay expresión?}
+    B -- no --> C[menú Bash legado]
+    B -- sí --> D[calcx/cli.py]
+    D --> E[parser AST allow-list]
+    E --> F[engine Decimal/complex]
+    F --> G[texto o JSON]
+    D -. REPL .-> H[historial acotado y atómico]
+```
+
+Los módulos matemáticos, la precedencia de configuración y la secuencia de errores están en el documento de arquitectura.
+
+El paquete principal no necesita dependencias externas. Puedes añadir `mpmath` para funciones de precisión arbitraria.
+
+## Inicio rápido
 
 ```bash
 git clone https://github.com/genesisgzdev/calcx-advanced.git
@@ -41,15 +58,15 @@ calcx '2^10'
 
 `^` is accepted as exponentiation. Constants include `pi`, `e`, `tau` and `i`.
 
-## A note about safety
+## Límites de confianza
 
-Expressions are parsed with Python's AST and checked against an explicit allow-list. CalcX does not call `eval`, `exec`, a shell or a user-provided command while evaluating an expression. Invalid expressions are reported on `stderr` and return a non-zero exit code.
+Las expresiones se analizan con el AST de Python y se comparan con una lista explícita de nodos permitidos. CalcX no llama a `eval`, `exec`, un shell ni comandos proporcionados por el usuario. Las expresiones inválidas se informan por `stderr` y devuelven un código distinto de cero.
 
-That makes the CLI suitable for automation, but it is still a calculator. Results used in safety-critical or financial work should be checked independently.
+Esto respalda el rechazo de ejecución de código dentro del evaluador y una interfaz útil para automatización. No respalda precisión certificada, seguridad financiera ni resultados safety-critical: esos resultados deben verificarse por una segunda vía.
 
-## Configuration and history
+## Configuración e historial
 
-The optional config file is read from `$XDG_CONFIG_HOME/calcx/config.env` or `~/.config/calcx/config.env`:
+El archivo de configuración opcional se lee desde `$XDG_CONFIG_HOME/calcx/config.env` o `~/.config/calcx/config.env`:
 
 ```text
 PRECISION=40
@@ -59,7 +76,7 @@ HISTORY_FILE=~/.local/state/calcx/history
 
 `CALCX_PRECISION`, `CALCX_HISTORY_LIMIT` and `CALCX_HISTORY` override the file. Command-line options take precedence over both. History is stored under `~/.local/state/calcx` by default.
 
-## Development
+## Instalar y comprobar
 
 ```bash
 python3 -m unittest discover -s tests -p 'test_*.py' -v
@@ -68,10 +85,10 @@ python3 -m compileall -q calcx
 bash -n calcx.sh
 ```
 
-The project is currently at version `2.0.4`. The old Bash implementation remains in `src/` for reference, while the Python package is the runtime used by the modern CLI path.
+Versión actual: `2.0.4`. La implementación Bash de `src/` queda por compatibilidad y auditoría; el cálculo moderno pasa por el paquete Python.
 
-The launch paths and validation boundary are mapped in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+Para una lectura más profunda: [manual de uso](docs/MANUAL.md), [arquitectura](docs/ARCHITECTURE.md) y [cambios por versión](CHANGELOG.md).
 
-## License
+## Licencia
 
 MIT. See [LICENSE](LICENSE).
