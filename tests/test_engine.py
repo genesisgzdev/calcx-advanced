@@ -18,6 +18,10 @@ class EngineTests(unittest.TestCase):
     def test_expression_cannot_execute_code(self):
         with self.assertRaises(ExpressionError): evaluate('__import__("os").system("id")')
 
+    def test_legacy_shell_fallback_does_not_use_python_eval(self):
+        source = (Path(__file__).parents[1] / "src" / "calcx-advanced.sh").read_text(encoding="utf-8")
+        self.assertNotIn("eval(", source)
+
     def test_domain_errors_are_typed(self):
         with self.assertRaises(DomainError): evaluate("1/0")
 
