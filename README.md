@@ -65,7 +65,7 @@ Las expresiones se analizan con el AST de Python y se comparan con una lista exp
 
 Esto respalda el rechazo de ejecución de código dentro del evaluador y una interfaz útil para automatización. No respalda precisión certificada, seguridad financiera ni resultados safety-critical: esos resultados deben verificarse por una segunda vía.
 
-Las funciones mantienen sus dominios: `factorial` exige un entero no negativo y limita el argumento a 10.000. Las expresiones tienen un máximo de 256 nodos y los exponentes una magnitud máxima de 10.000. Las operaciones matriciales usan una tolerancia relativa y Newton comprueba tanto el paso como el residuo.
+Las funciones mantienen sus dominios: `factorial` exige un entero no negativo y limita el argumento a 1.000 para que el resultado pueda formatearse de forma controlada. Las expresiones tienen un máximo de 256 nodos y los exponentes una magnitud máxima de 10.000. Las operaciones matriciales usan una tolerancia relativa y Newton comprueba tanto el paso como el residuo.
 
 ## Configuración e historial
 
