@@ -88,6 +88,12 @@ python3 -m compileall -q calcx
 bash -n calcx.sh
 ```
 
+La prueba aislada del contenedor usa una imagen mínima, red desactivada, 256 MiB, un CPU, 64 procesos y filesystem de solo lectura:
+
+```bash
+docker compose run --rm calcx-audit
+```
+
 Versión actual: `2.0.5`. `src/calcx-advanced.sh` se conserva para auditoría histórica, pero tanto ese script como `calcx.sh` derivan la entrada mantenida al paquete Python. El menú Bash y sus rutas basadas en `awk`/`bc` ya no son una superficie ejecutable del producto.
 
 Para una lectura más profunda: [manual de uso](docs/MANUAL.md), [arquitectura](docs/ARCHITECTURE.md) y [cambios por versión](CHANGELOG.md).
