@@ -2,6 +2,10 @@
 
 All notable changes to CalcX Advanced are documented here.
 
+## Unreleased
+
+- Actualiza checkout en CI y auditoría a la generación que ejecuta sobre Node 24.
+
 ## [2.0.5] - 2026-08-22
 
 ### Documentation
