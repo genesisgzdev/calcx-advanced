@@ -35,6 +35,15 @@ class EngineTests(unittest.TestCase):
         tiny = matrix_inverse([[1e-20, 0], [0, 1e-20]])
         self.assertAlmostEqual(tiny[0][0], 1e20)
 
+    def test_numeric_operations_have_resource_limits(self):
+        with self.assertRaises(ExpressionError): matrix_inverse([[1.0] * 129 for _ in range(129)])
+        with self.assertRaises(ExpressionError): integrate(lambda x: x, 0, 1, 1_000_002)
+        with self.assertRaises(ExpressionError): dft([1] * 4097)
+
+    def test_quadratic_uses_stable_root_pair(self):
+        roots = quadratic(1.0, 1e12, 1.0)
+        self.assertAlmostEqual(roots[0].real * roots[1].real, 1.0, places=6)
+
     def test_numerical_operations(self):
         self.assertAlmostEqual(integrate(lambda x: x * x, 0, 1), 1 / 3)
         self.assertAlmostEqual(newton(lambda x: x*x - 2, lambda x: 2*x, 1), 2**0.5)
