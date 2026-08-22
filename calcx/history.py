@@ -11,6 +11,10 @@ def _exclusive_lock(path: Path):
     path.parent.mkdir(parents=True, exist_ok=True)
     handle = path.open("a+", encoding="utf-8")
     try:
+        handle.seek(0, os.SEEK_END)
+        if handle.tell() == 0:
+            handle.write(" ")
+            handle.flush()
         if os.name == "nt":
             import msvcrt
             handle.seek(0)
