@@ -2,6 +2,13 @@
 
 All notable changes to CalcX Advanced are documented here.
 
+## [Unreleased]
+
+### Fixed
+
+- Mantiene los enteros para `factorial` y limita exponentes, nodos AST y argumentos desproporcionados.
+- Usa tolerancia relativa para inversión de matrices y verifica el residuo de Newton.
+
 ## [2.0.4] - 2026-08-20
 
 ### Changed

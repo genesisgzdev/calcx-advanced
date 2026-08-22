@@ -23,7 +23,7 @@ flowchart LR
       CLI --> CFG[carga de config]
       CLI --> ENG[evaluacion]
       ENG --> AST[AST y lista permitida]
-      ENG --> NUM[Decimal complex y math]
+      ENG --> NUM[Decimal complex y math con límites]
       CLI --> HIST[historial]
       OPS[API de operaciones]
     end
@@ -40,6 +40,8 @@ Componentes comprobables:
 - `calcx/cli.py` decide entre cálculo directo, JSON y REPL. `--interactive` entra en el REPL Python.
 - `calcx/engine.py` solo visita `Expression`, constantes, nombres permitidos, llamadas permitidas, operadores binarios y unarios. `generic_visit` rechaza lo demás.
 - `calcx/operations.py` es una API de operaciones numéricas y no significa que esas funciones estén expuestas desde expresiones de consola.
+- El evaluador limita el AST a 256 nodos, el exponente a una magnitud de 10.000 y `factorial` a enteros no negativos de hasta 10.000.
+- `matrix_inverse` compara el pivote con una tolerancia relativa a la escala de la matriz. `newton` exige paso pequeño y residuo pequeño antes de declarar convergencia.
 
 ## 2. Secuencia de una expresión
 

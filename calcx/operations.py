@@ -17,9 +17,11 @@ def matrix_inverse(matrix: list[list[float]]) -> list[list[float]]:
     n = len(matrix)
     if not n or any(len(row) != n for row in matrix): raise ExpressionError("matrix must be non-empty and square")
     augmented = [list(map(float, row)) + [float(i == j) for j in range(n)] for i, row in enumerate(matrix)]
+    scale = max((abs(value) for row in augmented for value in row[:n]), default=0.0)
+    if scale == 0.0: raise DomainError("matrix is singular")
     for col in range(n):
         pivot = max(range(col, n), key=lambda row: abs(augmented[row][col]))
-        if abs(augmented[pivot][col]) < 1e-14: raise DomainError("matrix is singular")
+        if abs(augmented[pivot][col]) <= scale * 1e-14: raise DomainError("matrix is singular")
         augmented[col], augmented[pivot] = augmented[pivot], augmented[col]
         divisor = augmented[col][col]
         augmented[col] = [value / divisor for value in augmented[col]]
@@ -42,9 +44,12 @@ def newton(function, derivative, guess: float, tolerance: float = 1e-12, iterati
     x = float(guess)
     for _ in range(iterations):
         fx, dfx = function(x), derivative(x)
-        if abs(dfx) < 1e-15: raise ConvergenceError("derivative is too close to zero")
+        if not math.isfinite(fx) or not math.isfinite(dfx) or abs(dfx) < 1e-15:
+            raise ConvergenceError("derivative is invalid or too close to zero")
         next_x = x - fx / dfx
-        if abs(next_x - x) <= tolerance: return next_x
+        if not math.isfinite(next_x): raise ConvergenceError("method produced a non-finite value")
+        if abs(next_x - x) <= tolerance and abs(function(next_x)) <= tolerance:
+            return next_x
         x = next_x
     raise ConvergenceError("method did not converge")
 
