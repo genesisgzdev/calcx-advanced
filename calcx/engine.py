@@ -14,10 +14,12 @@ from .errors import DomainError, ExpressionError
 
 MAX_AST_NODES = 256
 MAX_EXPONENT = 10_000
-MAX_FACTORIAL_ARGUMENT = 10_000
+MAX_FACTORIAL_ARGUMENT = 1_000
 
 
 def _sqrt(x: Any) -> Any:
+    if isinstance(x, Decimal) and x >= 0:
+        return x.sqrt()
     number = float(x) if isinstance(x, Decimal) else x
     if isinstance(number, complex) or number < 0:
         return cmath.sqrt(number)

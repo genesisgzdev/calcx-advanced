@@ -36,7 +36,15 @@ class EngineTests(unittest.TestCase):
         with self.assertRaises(DomainError): evaluate("1/0")
         self.assertEqual(evaluate("factorial(5)"), 120)
         with self.assertRaises(DomainError): evaluate("factorial(5.5)")
+        with self.assertRaises(DomainError): evaluate("factorial(10000)")
         with self.assertRaises(DomainError): evaluate("2^10001")
+
+    def test_decimal_sqrt_stays_in_the_decimal_domain(self):
+        self.assertAlmostEqual(float(evaluate("sqrt(2)^2")), 2.0, places=12)
+
+    def test_quadratic_rejects_non_finite_inputs_and_outputs(self):
+        with self.assertRaises(DomainError): quadratic(1.0, float("inf"), 1.0)
+        with self.assertRaises(DomainError): quadratic(1.0, 1e308, 1.0)
 
     def test_matrix_and_quadratic(self):
         inverse = matrix_inverse([[4, 7], [2, 6]])
