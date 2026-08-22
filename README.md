@@ -15,10 +15,10 @@ En 30 segundos: ejecuta `./calcx.sh 'sqrt(144)'` para una cuenta, `--json` para 
 - Trigonometric, logarithmic, hyperbolic and rounding functions
 - JSON output for scripts and other tools
 - límites de nodos AST, exponentes y factoriales para evitar operaciones desproporcionadas
-- A menu interface, a direct CLI and an interactive Python REPL
+- Direct CLI and interactive Python REPL
 - configuración XDG e historial acotado con escritura atómica
 
-La evidencia es el código de [`calcx/`](calcx/), los tests de [`tests/`](tests/) y los checks de shell listados más abajo. La arquitectura completa, con las dos rutas de entrada y sus límites, está en [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+La evidencia es el código de [`calcx/`](calcx/), los tests de [`tests/`](tests/) y los checks de shell listados más abajo. La arquitectura completa, con los wrappers de entrada y sus límites, está en [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ## Flujo principal
 
