@@ -21,6 +21,7 @@ All notable changes to CalcX Advanced are documented here.
 
 ## [Unreleased]
 
+- El runner shell de pruebas resuelve sus rutas desde el propio script y funciona igual desde la raíz o desde otro directorio.
 - Retira el menú Bash de la ruta ejecutable sin argumentos. `calcx.sh` y el script histórico derivan al REPL Python con allow-list AST, evitando que fórmulas de usuario lleguen a programas `awk` o `bc` construidos dinámicamente.
 
 ## [2.0.4] - 2026-08-20
