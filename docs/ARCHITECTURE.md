@@ -1,6 +1,6 @@
 # CalcX architecture
 
-Este documento sigue las dos entradas que existen en el repositorio y no mezcla el menú Bash de compatibilidad con el motor Python moderno.
+Este documento sigue las entradas del repositorio y distingue el script Bash histórico del motor Python mantenido. El script histórico no se ejecuta como menú: deriva al REPL Python.
 
 ## Cómo leerlo
 
@@ -15,7 +15,7 @@ flowchart LR
       PM[python module]
       PX[pipx console]
     end
-    SH -->|sin expresión| MENU[menu Bash legado]
+    SH -->|sin expresión| REPL[REPL Python]
     SH -->|expresión o flags| PX
     PM --> CLI[modulo CLI]
     PX --> CLI
@@ -36,7 +36,7 @@ flowchart LR
 
 Componentes comprobables:
 
-- `calcx.sh` conserva el menú Bash cuando no recibe una expresión; una expresión, tanto por el wrapper como por el script legacy directo, pasa por `calcx/cli.py`.
+- `calcx.sh` y `src/calcx-advanced.sh` derivan cualquier entrada al paquete Python; el código Bash histórico no recibe fórmulas del usuario durante una ejecución mantenida.
 - `calcx/cli.py` decide entre cálculo directo, JSON y REPL. `--interactive` entra en el REPL Python.
 - `calcx/engine.py` solo visita `Expression`, constantes, nombres permitidos, llamadas permitidas, operadores binarios y unarios. `generic_visit` rechaza lo demás.
 - `calcx/operations.py` es una API de operaciones numéricas y no significa que esas funciones estén expuestas desde expresiones de consola.

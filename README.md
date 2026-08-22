@@ -2,7 +2,7 @@
 
 Calculadora científica de terminal para personas y scripts. La ruta de expresiones usa un AST de Python con allow-list explícita, no `eval`, y devuelve texto o JSON determinista.
 
-En 30 segundos: ejecuta `./calcx.sh 'sqrt(144)'` para una cuenta, `--json` para automatización y `--interactive` para la REPL Python. Sin expresión, el wrapper conserva el menú Bash histórico. El núcleo no necesita dependencias externas obligatorias.
+En 30 segundos: ejecuta `./calcx.sh 'sqrt(144)'` para una cuenta, `--json` para automatización y `--interactive` para la REPL Python. Sin expresión, el wrapper también entra en esa REPL segura; el menú Bash histórico no forma parte de la ruta ejecutable. El núcleo no necesita dependencias externas obligatorias.
 
 [![CI](https://github.com/genesisgzdev/calcx-advanced/actions/workflows/ci.yml/badge.svg)](https://github.com/genesisgzdev/calcx-advanced/actions/workflows/ci.yml)
 [![Latest release](https://img.shields.io/github/v/release/genesisgzdev/calcx-advanced)](https://github.com/genesisgzdev/calcx-advanced/releases)
@@ -25,7 +25,7 @@ La evidencia es el código de [`calcx/`](calcx/), los tests de [`tests/`](tests/
 ```mermaid
 flowchart LR
     A[argumentos] --> B{hay expresión?}
-    B -- no --> C[menú Bash legado]
+    B -- no --> C[REPL Python]
     B -- sí --> D[CLI Python]
     D --> E[parser AST allow list]
     E --> F[engine Decimal y complex]
@@ -88,7 +88,7 @@ python3 -m compileall -q calcx
 bash -n calcx.sh
 ```
 
-Versión actual: `2.0.5`. La implementación Bash de `src/` conserva el menú por compatibilidad, pero las expresiones directas también pasan por el paquete Python y su allow-list AST; no hay una segunda ruta basada en `bc`.
+Versión actual: `2.0.5`. `src/calcx-advanced.sh` se conserva para auditoría histórica, pero tanto ese script como `calcx.sh` derivan la entrada mantenida al paquete Python. El menú Bash y sus rutas basadas en `awk`/`bc` ya no son una superficie ejecutable del producto.
 
 Para una lectura más profunda: [manual de uso](docs/MANUAL.md), [arquitectura](docs/ARCHITECTURE.md) y [cambios por versión](CHANGELOG.md).
 

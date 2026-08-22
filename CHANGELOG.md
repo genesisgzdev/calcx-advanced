@@ -21,6 +21,8 @@ All notable changes to CalcX Advanced are documented here.
 
 ## [Unreleased]
 
+- Retira el menú Bash de la ruta ejecutable sin argumentos. `calcx.sh` y el script histórico derivan al REPL Python con allow-list AST, evitando que fórmulas de usuario lleguen a programas `awk` o `bc` construidos dinámicamente.
+
 ## [2.0.4] - 2026-08-20
 
 ### Changed

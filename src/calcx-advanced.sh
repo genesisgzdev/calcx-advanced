@@ -2,6 +2,21 @@
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
+# The historical menu contains formula paths that were built around awk and
+# bc. Keep the source available for audit history, but never expose that code
+# as an executable product route. The maintained REPL is the only no-argument
+# entry point.
+if [[ $# -eq 0 ]]; then
+    if command -v python3 >/dev/null 2>&1; then
+        PYTHONPATH="$SCRIPT_DIR/..${PYTHONPATH:+:$PYTHONPATH}" exec python3 -m calcx --interactive
+    elif command -v python >/dev/null 2>&1; then
+        PYTHONPATH="$SCRIPT_DIR/..${PYTHONPATH:+:$PYTHONPATH}" exec python -m calcx --interactive
+    else
+        echo "CalcX requires Python 3 for the maintained evaluator." >&2
+        exit 1
+    fi
+fi
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'

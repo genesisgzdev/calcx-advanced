@@ -23,3 +23,17 @@ if [[ "$result" == 3.33* ]]; then
 else
     print_error "Division test failed"
 fi
+
+repl=$(printf 'quit\n' | ../calcx.sh)
+if [[ "$repl" == *"Escribe 'help' o 'quit'"* ]]; then
+    print_success "No-argument wrapper uses the Python REPL"
+else
+    print_error "No-argument wrapper did not use the Python REPL"
+fi
+
+legacy_repl=$(printf 'quit\n' | bash ../src/calcx-advanced.sh)
+if [[ "$legacy_repl" == *"Escribe 'help' o 'quit'"* ]]; then
+    print_success "Historical script delegates to the Python REPL"
+else
+    print_error "Historical script exposed the legacy menu"
+fi
