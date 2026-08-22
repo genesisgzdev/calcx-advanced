@@ -2,7 +2,7 @@
 
 Calculadora científica de terminal para personas y scripts. La ruta de expresiones usa un AST de Python con allow-list explícita, no `eval`, y devuelve texto o JSON determinista.
 
-En 30 segundos: ejecuta `./calcx.sh 'sqrt(144)'` para una cuenta, `--json` para automatización y `--interactive` para la REPL Python. Sin expresión, el wrapper conserva el menú Bash histórico. El núcleo no necesita dependencias externas obligatorias.
+En 30 segundos: ejecuta `./calcx.sh 'sqrt(144)'` para una cuenta, `--json` para automatización y `--interactive` para la REPL Python. Sin expresión, el wrapper también entra en esa REPL segura; el menú Bash histórico no forma parte de la ruta ejecutable. El núcleo no necesita dependencias externas obligatorias.
 
 [![CI](https://github.com/genesisgzdev/calcx-advanced/actions/workflows/ci.yml/badge.svg)](https://github.com/genesisgzdev/calcx-advanced/actions/workflows/ci.yml)
 [![Latest release](https://img.shields.io/github/v/release/genesisgzdev/calcx-advanced)](https://github.com/genesisgzdev/calcx-advanced/releases)
@@ -15,17 +15,17 @@ En 30 segundos: ejecuta `./calcx.sh 'sqrt(144)'` para una cuenta, `--json` para 
 - Trigonometric, logarithmic, hyperbolic and rounding functions
 - JSON output for scripts and other tools
 - límites de nodos AST, exponentes y factoriales para evitar operaciones desproporcionadas
-- A menu interface, a direct CLI and an interactive Python REPL
+- Direct CLI and interactive Python REPL
 - configuración XDG e historial acotado con escritura atómica
 
-La evidencia es el código de [`calcx/`](calcx/), los tests de [`tests/`](tests/) y los checks de shell listados más abajo. La arquitectura completa, con las dos rutas de entrada y sus límites, está en [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+La evidencia es el código de [`calcx/`](calcx/), los tests de [`tests/`](tests/) y los checks de shell listados más abajo. La arquitectura completa, con los wrappers de entrada y sus límites, está en [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ## Flujo principal
 
 ```mermaid
 flowchart LR
     A[argumentos] --> B{hay expresión?}
-    B -- no --> C[menú Bash legado]
+    B -- no --> C[REPL Python]
     B -- sí --> D[CLI Python]
     D --> E[parser AST allow list]
     E --> F[engine Decimal y complex]
@@ -65,7 +65,7 @@ Las expresiones se analizan con el AST de Python y se comparan con una lista exp
 
 Esto respalda el rechazo de ejecución de código dentro del evaluador y una interfaz útil para automatización. No respalda precisión certificada, seguridad financiera ni resultados safety-critical: esos resultados deben verificarse por una segunda vía.
 
-Las funciones mantienen sus dominios: `factorial` exige un entero no negativo y limita el argumento a 10.000. Las expresiones tienen un máximo de 256 nodos y los exponentes una magnitud máxima de 10.000. Las operaciones matriciales usan una tolerancia relativa y Newton comprueba tanto el paso como el residuo.
+Las funciones mantienen sus dominios: `factorial` exige un entero no negativo y limita el argumento a 1.000 para que el resultado pueda formatearse de forma controlada. Las expresiones tienen un máximo de 256 nodos y los exponentes una magnitud máxima de 10.000. Las operaciones matriciales usan una tolerancia relativa y Newton comprueba tanto el paso como el residuo.
 
 ## Configuración e historial
 
@@ -88,7 +88,13 @@ python3 -m compileall -q calcx
 bash -n calcx.sh
 ```
 
-Versión actual: `2.0.5`. La implementación Bash de `src/` queda por compatibilidad y auditoría; el cálculo moderno pasa por el paquete Python.
+La prueba aislada del contenedor usa una imagen mínima, red desactivada, 256 MiB, un CPU, 64 procesos y filesystem de solo lectura:
+
+```bash
+docker compose run --rm calcx-audit
+```
+
+Versión actual: `2.0.5`. `src/calcx-advanced.sh` se conserva para auditoría histórica, pero tanto ese script como `calcx.sh` derivan la entrada mantenida al paquete Python. El menú Bash y sus rutas basadas en `awk`/`bc` ya no son una superficie ejecutable del producto.
 
 Para una lectura más profunda: [manual de uso](docs/MANUAL.md), [arquitectura](docs/ARCHITECTURE.md) y [cambios por versión](CHANGELOG.md).
 

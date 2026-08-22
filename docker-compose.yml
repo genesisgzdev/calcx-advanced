@@ -1,0 +1,14 @@
+services:
+  calcx-audit:
+    build: .
+    network_mode: none
+    mem_limit: 256m
+    cpus: 1.0
+    pids_limit: 64
+    read_only: true
+    environment:
+      CALCX_HISTORY: /tmp/calcx-history
+    tmpfs:
+      - /tmp:size=16m
+    entrypoint: ["python", "-m", "calcx"]
+    command: ["--json", "sqrt(2)^2"]

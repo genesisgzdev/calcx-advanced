@@ -1,6 +1,6 @@
 # CalcX architecture
 
-Este documento sigue las dos entradas que existen en el repositorio y no mezcla el menú Bash de compatibilidad con el motor Python moderno.
+Este documento sigue las entradas del repositorio y distingue el script Bash histórico del motor Python mantenido. El script histórico no se ejecuta como menú: deriva al REPL Python.
 
 ## Cómo leerlo
 
@@ -8,14 +8,14 @@ La primera figura responde qué se ejecuta. La secuencia responde qué ocurre co
 
 ## 1. Mapa de componentes
 
-~~~mermaid
+```mermaid
 flowchart LR
     subgraph ENTRY[Entradas]
       SH[calcx shell]
       PM[python module]
       PX[pipx console]
     end
-    SH -->|sin expresión| MENU[menu Bash legado]
+    SH -->|sin expresión| REPL[REPL Python]
     SH -->|expresión o flags| PX
     PM --> CLI[modulo CLI]
     PX --> CLI
@@ -32,11 +32,11 @@ flowchart LR
     ENG --> OUT[salida texto o JSON]
     ENG --> ERR[error tipado y salida 2]
     HIST --> FILE[archivo de historial atomico]
-~~~
+```
 
 Componentes comprobables:
 
-- `calcx.sh` conserva el menú Bash cuando no recibe una expresión; no pasa por `calcx/cli.py` en ese caso.
+- `calcx.sh` y `src/calcx-advanced.sh` derivan cualquier entrada al paquete Python; el código Bash histórico no recibe fórmulas del usuario durante una ejecución mantenida.
 - `calcx/cli.py` decide entre cálculo directo, JSON y REPL. `--interactive` entra en el REPL Python.
 - `calcx/engine.py` solo visita `Expression`, constantes, nombres permitidos, llamadas permitidas, operadores binarios y unarios. `generic_visit` rechaza lo demás.
 - `calcx/operations.py` es una API de operaciones numéricas y no significa que esas funciones estén expuestas desde expresiones de consola.
@@ -47,7 +47,7 @@ Componentes comprobables:
 
 ## 2. Secuencia de una expresión
 
-~~~mermaid
+```mermaid
 sequenceDiagram
     participant User
     participant CLI as main CLI
@@ -58,7 +58,7 @@ sequenceDiagram
     User->>CLI: calcx --precision N --json expression
     CLI->>Config: load cli_precision
     Config-->>CLI: precision + history path + limit
-    CLI->>Parser: replace ^ with **; parse expression
+    CLI->>Parser: normalize exponent syntax and parse expression
     Parser-->>Eval: AST or SyntaxError
     Eval->>Eval: allow-list visits nodes
     Eval-->>CLI: value or typed Domain/Expression error
@@ -68,7 +68,7 @@ sequenceDiagram
     else expected input/domain failure
       CLI-->>User: error on stderr + exit 2
     end
-~~~
+```
 
 ## 3. Precedencia y persistencia
 

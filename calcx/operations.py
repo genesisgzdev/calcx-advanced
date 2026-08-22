@@ -11,6 +11,8 @@ MAX_DFT_LENGTH = 4_096
 
 
 def quadratic(a: float, b: float, c: float) -> tuple[complex, complex]:
+    if not all(math.isfinite(value) for value in (a, b, c)):
+        raise DomainError("quadratic coefficients must be finite")
     if a == 0: raise DomainError("a must not be zero")
     discriminant = complex(b * b - 4 * a * c)
     root = cmath.sqrt(discriminant)
@@ -18,8 +20,12 @@ def quadratic(a: float, b: float, c: float) -> tuple[complex, complex]:
     sign = 1 if b >= 0 else -1
     q = -0.5 * (b + sign * root)
     if q == 0:
-        return ((-b + root) / (2 * a), (-b - root) / (2 * a))
-    return (q / a, c / q)
+        roots = ((-b + root) / (2 * a), (-b - root) / (2 * a))
+    else:
+        roots = (q / a, c / q)
+    if not all(math.isfinite(value.real) and math.isfinite(value.imag) for value in roots):
+        raise DomainError("quadratic result is not finite")
+    return roots
 
 
 def matrix_inverse(matrix: list[list[float]]) -> list[list[float]]:

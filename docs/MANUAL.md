@@ -2,7 +2,7 @@
 
 ## Launching
 
-Run `./calcx.sh` from the repository or install the package with `pipx install .` and use `calcx` globally. The checkout wrapper preserves the original menu-driven interface when invoked without arguments; `--interactive` starts the newer Python REPL. In scripts, always quote the expression so the shell cannot expand operators first.
+Run `./calcx.sh` from the repository or install the package with `pipx install .` and use `calcx` globally. With no arguments the checkout wrapper starts the Python REPL; `--interactive` does the same explicitly. In scripts, always quote the expression so the shell cannot expand operators first.
 
 ## Expressions
 
