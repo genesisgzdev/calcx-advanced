@@ -88,7 +88,7 @@ python3 -m compileall -q calcx
 bash -n calcx.sh
 ```
 
-Versión actual: `2.0.5`. La implementación Bash de `src/` queda por compatibilidad y auditoría; el cálculo moderno pasa por el paquete Python.
+Versión actual: `2.0.5`. La implementación Bash de `src/` conserva el menú por compatibilidad, pero las expresiones directas también pasan por el paquete Python y su allow-list AST; no hay una segunda ruta basada en `bc`.
 
 Para una lectura más profunda: [manual de uso](docs/MANUAL.md), [arquitectura](docs/ARCHITECTURE.md) y [cambios por versión](CHANGELOG.md).
 

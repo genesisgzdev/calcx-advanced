@@ -22,6 +22,16 @@ class EngineTests(unittest.TestCase):
         source = (Path(__file__).parents[1] / "src" / "calcx-advanced.sh").read_text(encoding="utf-8")
         self.assertNotIn("eval(", source)
 
+    def test_legacy_shell_expression_path_uses_the_ast_engine(self):
+        root = Path(__file__).parents[1]
+        env = {**os.environ, "PYTHONPATH": str(root)}
+        result = subprocess.run(
+            ["bash", str(root / "src" / "calcx-advanced.sh"), "define f(x) { return x; }"],
+            cwd=root, env=env, text=True, capture_output=True,
+        )
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("invalid expression", result.stderr)
+
     def test_domain_errors_are_typed(self):
         with self.assertRaises(DomainError): evaluate("1/0")
         self.assertEqual(evaluate("factorial(5)"), 120)

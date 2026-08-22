@@ -65,25 +65,11 @@ PYTHON_CMD=$(detect_python_command)
 
 if [ "$#" -gt 0 ]; then
     expr="$*"
-
-    # Try using bc first (best for pure arithmetic)
-    if command -v bc >/dev/null 2>&1; then
-        if result=$(echo "$expr" | bc -l 2>/dev/null); then
-            echo "$result"
-            exit 0
-        else
-            echo "Error in expression: '$expr'" >&2
-            exit 1
-        fi
-    fi
-
-    # Fallback to Python if bc is unavailable
     if [ -n "$PYTHON_CMD" ]; then
-        if PYTHONPATH="$SCRIPT_DIR/..${PYTHONPATH:+:$PYTHONPATH}" "$PYTHON_CMD" -m calcx "$expr"; then
-            exit 0
-        fi
-        echo "Error in expression: '$expr'" >&2
-        exit 1
+        # Keep direct legacy invocation on the same AST allow-list as
+        # calcx.sh. Do not hand user input to bc, whose language also accepts
+        # definitions, loops and input operations.
+        PYTHONPATH="$SCRIPT_DIR/..${PYTHONPATH:+:$PYTHONPATH}" exec "$PYTHON_CMD" -m calcx "$expr"
     fi
 
     echo "Error: neither 'bc' nor Python available to evaluate expression." >&2

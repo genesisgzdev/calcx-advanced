@@ -36,7 +36,7 @@ flowchart LR
 
 Componentes comprobables:
 
-- `calcx.sh` conserva el menú Bash cuando no recibe una expresión; no pasa por `calcx/cli.py` en ese caso.
+- `calcx.sh` conserva el menú Bash cuando no recibe una expresión; una expresión, tanto por el wrapper como por el script legacy directo, pasa por `calcx/cli.py`.
 - `calcx/cli.py` decide entre cálculo directo, JSON y REPL. `--interactive` entra en el REPL Python.
 - `calcx/engine.py` solo visita `Expression`, constantes, nombres permitidos, llamadas permitidas, operadores binarios y unarios. `generic_visit` rechaza lo demás.
 - `calcx/operations.py` es una API de operaciones numéricas y no significa que esas funciones estén expuestas desde expresiones de consola.
