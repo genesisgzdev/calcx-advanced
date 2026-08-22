@@ -24,11 +24,16 @@ class EngineTests(unittest.TestCase):
 
     def test_domain_errors_are_typed(self):
         with self.assertRaises(DomainError): evaluate("1/0")
+        self.assertEqual(evaluate("factorial(5)"), 120)
+        with self.assertRaises(DomainError): evaluate("factorial(5.5)")
+        with self.assertRaises(DomainError): evaluate("2^10001")
 
     def test_matrix_and_quadratic(self):
         inverse = matrix_inverse([[4, 7], [2, 6]])
         self.assertAlmostEqual(inverse[0][0], 0.6)
         self.assertEqual({round(root.real) for root in quadratic(1, -3, 2)}, {1, 2})
+        tiny = matrix_inverse([[1e-20, 0], [0, 1e-20]])
+        self.assertAlmostEqual(tiny[0][0], 1e20)
 
     def test_numerical_operations(self):
         self.assertAlmostEqual(integrate(lambda x: x * x, 0, 1), 1 / 3)

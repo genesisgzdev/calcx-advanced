@@ -12,6 +12,10 @@ from typing import Any, Callable
 
 from .errors import DomainError, ExpressionError
 
+MAX_AST_NODES = 256
+MAX_EXPONENT = 10_000
+MAX_FACTORIAL_ARGUMENT = 10_000
+
 
 def _sqrt(x: Any) -> Any:
     number = float(x) if isinstance(x, Decimal) else x
@@ -27,13 +31,26 @@ def _log(x: Any, base: Any = math.e) -> Any:
     return cmath.log(number) / cmath.log(base) if isinstance(number, complex) else math.log(number, float(base))
 
 
+def _factorial(value: Any) -> int:
+    if isinstance(value, Decimal):
+        if value != value.to_integral_value() or value < 0:
+            raise DomainError("factorial requires a non-negative integer")
+        value = int(value)
+    elif isinstance(value, float) and (not value.is_integer() or value < 0):
+        raise DomainError("factorial requires a non-negative integer")
+    value = int(value)
+    if value > MAX_FACTORIAL_ARGUMENT:
+        raise DomainError(f"factorial argument exceeds {MAX_FACTORIAL_ARGUMENT}")
+    return math.factorial(value)
+
+
 FUNCTIONS: dict[str, Callable[..., Any]] = {
     "abs": abs, "sqrt": _sqrt, "sin": cmath.sin, "cos": cmath.cos,
     "tan": cmath.tan, "asin": cmath.asin, "acos": cmath.acos,
     "atan": cmath.atan, "sinh": cmath.sinh, "cosh": cmath.cosh,
     "tanh": cmath.tanh, "exp": cmath.exp, "log": _log,
     "ln": lambda x: _log(x), "log10": lambda x: _log(x, 10),
-    "floor": math.floor, "ceil": math.ceil, "factorial": math.factorial,
+    "floor": math.floor, "ceil": math.ceil, "factorial": _factorial,
 }
 CONSTANTS = {"pi": Decimal(str(math.pi)), "e": Decimal(str(math.e)), "tau": Decimal(str(math.tau)), "i": 1j}
 
@@ -65,7 +82,11 @@ class _Evaluator(ast.NodeVisitor):
             if isinstance(node.op, ast.Div): return left / right
             if isinstance(node.op, ast.FloorDiv): return left // right
             if isinstance(node.op, ast.Mod): return left % right
-            if isinstance(node.op, ast.Pow): return left ** right
+            if isinstance(node.op, ast.Pow):
+                exponent = float(right) if isinstance(right, Decimal) else right
+                if isinstance(exponent, (int, float)) and abs(exponent) > MAX_EXPONENT:
+                    raise DomainError(f"exponent magnitude exceeds {MAX_EXPONENT}")
+                return left ** right
         except (ArithmeticError, ValueError, ZeroDivisionError) as exc:
             raise DomainError(str(exc)) from exc
         raise ExpressionError("unsupported operator")
@@ -83,7 +104,6 @@ class _Evaluator(ast.NodeVisitor):
             raise ExpressionError("keyword arguments are not allowed")
         try:
             arguments = tuple(self.visit(arg) for arg in node.args)
-            arguments = tuple(float(arg) if isinstance(arg, Decimal) else arg for arg in arguments)
             return FUNCTIONS[node.func.id](*arguments)
         except (ArithmeticError, ValueError, TypeError) as exc:
             raise DomainError(str(exc)) from exc
@@ -101,6 +121,11 @@ def evaluate(expression: str, precision: int = 28) -> Any:
         tree = ast.parse(expression, mode="eval")
     except SyntaxError as exc:
         raise ExpressionError(f"invalid expression: {exc.msg}") from exc
+    nodes = list(ast.walk(tree))
+    if len(nodes) > MAX_AST_NODES:
+        raise ExpressionError(f"expression exceeds the {MAX_AST_NODES}-node limit")
+    if max((len(list(ast.walk(node))) for node in nodes), default=0) > MAX_AST_NODES:
+        raise ExpressionError("expression nesting is too deep")
     with localcontext() as context:
         context.prec = max(1, min(int(precision), 1000))
         return _Evaluator().visit(tree)

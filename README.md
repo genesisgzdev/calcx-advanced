@@ -14,6 +14,7 @@ En 30 segundos: ejecuta `./calcx.sh 'sqrt(144)'` para una cuenta, `--json` para 
 - Complex numbers, matrices and numerical methods
 - Trigonometric, logarithmic, hyperbolic and rounding functions
 - JSON output for scripts and other tools
+- límites de nodos AST, exponentes y factoriales para evitar operaciones desproporcionadas
 - A menu interface, a direct CLI and an interactive Python REPL
 - configuración XDG e historial acotado con escritura atómica
 
@@ -63,6 +64,8 @@ calcx '2^10'
 Las expresiones se analizan con el AST de Python y se comparan con una lista explícita de nodos permitidos. CalcX no llama a `eval`, `exec`, un shell ni comandos proporcionados por el usuario. Las expresiones inválidas se informan por `stderr` y devuelven un código distinto de cero.
 
 Esto respalda el rechazo de ejecución de código dentro del evaluador y una interfaz útil para automatización. No respalda precisión certificada, seguridad financiera ni resultados safety-critical: esos resultados deben verificarse por una segunda vía.
+
+Las funciones mantienen sus dominios: `factorial` exige un entero no negativo y limita el argumento a 10.000. Las expresiones tienen un máximo de 256 nodos y los exponentes una magnitud máxima de 10.000. Las operaciones matriciales usan una tolerancia relativa y Newton comprueba tanto el paso como el residuo.
 
 ## Configuración e historial
 
