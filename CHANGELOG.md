@@ -4,6 +4,10 @@ All notable changes to CalcX Advanced are documented here.
 
 ## [Unreleased]
 
+### Documentation
+
+- Alinea la descripción de precisión con el backend real y elimina la opción `mpmath` que no participaba en la evaluación.
+
 ### Fixed
 
 - Añade límites de dimensión y evaluaciones a matrices, integración y DFT, y usa la fórmula cuadrática estable cuando los coeficientes provocan cancelación.

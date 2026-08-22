@@ -35,7 +35,7 @@ flowchart LR
 
 Los módulos matemáticos, la precedencia de configuración y la secuencia de errores están en el documento de arquitectura.
 
-El paquete principal no necesita dependencias externas. Puedes añadir `mpmath` para funciones de precisión arbitraria.
+El paquete principal no necesita dependencias externas. La precisión configurable se aplica a los literales y operaciones `Decimal`; las funciones trascendentes y complejas pasan por `math`/`cmath` y mantienen la precisión de doble flotante.
 
 ## Inicio rápido
 
