@@ -8,6 +8,7 @@ All notable changes to CalcX Advanced are documented here.
 - Actualiza `setup-python` a la generación que ejecuta sobre Node 24.
 - Corrige la combinación `sqrt(2)^2`, limita factorial a un resultado que el CLI puede formatear y rechaza coeficientes o raíces no finitos en la cuadrática.
 - Corrige la sintaxis YAML de los workflows para que GitHub pueda crear sus jobs.
+- El escaneo de secretos recibe el historial completo del checkout y ya no falla por una referencia ausente en un clone superficial.
 
 ## [2.0.5] - 2026-08-22
 
