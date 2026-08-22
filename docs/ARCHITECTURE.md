@@ -42,6 +42,7 @@ Componentes comprobables:
 - `calcx/operations.py` es una API de operaciones numéricas y no significa que esas funciones estén expuestas desde expresiones de consola.
 - `precision` no convierte automáticamente `sin`, `cos`, `log`, `sqrt` ni las operaciones complejas en aritmética arbitraria: esas rutas usan `math`/`cmath`. Las operaciones que conservan `Decimal` sí respetan el contexto configurado.
 - El evaluador limita el AST a 256 nodos, el exponente a una magnitud de 10.000 y `factorial` a enteros no negativos de hasta 10.000.
+- La salida de enteros está limitada a 4.096 dígitos. Un cálculo que supera ese límite devuelve un `DomainError` controlado; no intenta convertir un resultado potencialmente enorme en texto sin límite.
 - `matrix_inverse` compara el pivote con una tolerancia relativa a la escala de la matriz. `newton` exige paso pequeño y residuo pequeño antes de declarar convergencia.
 - Las operaciones avanzadas tienen presupuestos propios: matrices de hasta 128x128, Simpson hasta 1.000.000 de intervalos y DFT hasta 4.096 muestras. La cuadrática usa una pareja de raíces estable para reducir cancelación.
 

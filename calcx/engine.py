@@ -15,6 +15,7 @@ from .errors import DomainError, ExpressionError
 MAX_AST_NODES = 256
 MAX_EXPONENT = 10_000
 MAX_FACTORIAL_ARGUMENT = 10_000
+MAX_INTEGER_OUTPUT_DIGITS = 4_096
 
 
 def _sqrt(x: Any) -> Any:
@@ -140,4 +141,14 @@ def format_value(value: Any, precision: int = 12) -> str:
         return format(value, f".{precision}g")
     if isinstance(value, float):
         return format(value, f".{precision}g")
+    if isinstance(value, int) and not isinstance(value, bool):
+        # Python deliberately rejects very large int -> str conversions. Keep
+        # that implementation limit behind a stable, user-facing CalcX error.
+        if value == 0:
+            return "0"
+        estimated_digits = int(abs(value).bit_length() * 0.30103) + 1
+        if estimated_digits > MAX_INTEGER_OUTPUT_DIGITS:
+            raise DomainError(
+                f"integer result exceeds the {MAX_INTEGER_OUTPUT_DIGITS}-digit output limit"
+            )
     return str(value)

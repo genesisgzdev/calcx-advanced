@@ -28,6 +28,17 @@ class EngineTests(unittest.TestCase):
         with self.assertRaises(DomainError): evaluate("factorial(5.5)")
         with self.assertRaises(DomainError): evaluate("2^10001")
 
+    def test_large_integer_output_is_a_typed_error(self):
+        root = Path(__file__).parents[1]
+        env = {**os.environ, "PYTHONPATH": str(root)}
+        result = subprocess.run(
+            [sys.executable, "-m", "calcx", "factorial(10000)"],
+            cwd=root, env=env, text=True, capture_output=True,
+        )
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("output limit", result.stderr)
+        self.assertNotIn("Traceback", result.stderr)
+
     def test_matrix_and_quadratic(self):
         inverse = matrix_inverse([[4, 7], [2, 6]])
         self.assertAlmostEqual(inverse[0][0], 0.6)
