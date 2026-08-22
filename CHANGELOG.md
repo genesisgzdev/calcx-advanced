@@ -2,7 +2,7 @@
 
 All notable changes to CalcX Advanced are documented here.
 
-## [Unreleased]
+## [2.0.5] - 2026-08-22
 
 ### Documentation
 
@@ -13,6 +13,13 @@ All notable changes to CalcX Advanced are documented here.
 - Añade límites de dimensión y evaluaciones a matrices, integración y DFT, y usa la fórmula cuadrática estable cuando los coeficientes provocan cancelación.
 - Mantiene los enteros para `factorial` y limita exponentes, nodos AST y argumentos desproporcionados.
 - Usa tolerancia relativa para inversión de matrices y verifica el residuo de Newton.
+
+### Riesgo y actualización
+
+- No cambia la sintaxis pública ni requiere dependencias obligatorias nuevas.
+- Las funciones trascendentales siguen limitadas por el backend numérico disponible; aumentar `Decimal` no convierte operaciones `float` en precisión arbitraria.
+
+## [Unreleased]
 
 ## [2.0.4] - 2026-08-20
 
