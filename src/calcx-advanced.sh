@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
@@ -77,24 +79,11 @@ if [ "$#" -gt 0 ]; then
 
     # Fallback to Python if bc is unavailable
     if [ -n "$PYTHON_CMD" ]; then
-        EXPR_ENV="$expr" $PYTHON_CMD - <<'PYEOF'
-import os, sys, math, cmath
-expr = os.environ.get('EXPR_ENV', '')
-try:
-    res = eval(expr)
-    if isinstance(res, complex):
-        print(f"{res.real}+{res.imag}j")
-    else:
-        print(res)
-except Exception:
-    sys.exit(1)
-PYEOF
-        if [ $? -eq 0 ]; then
+        if PYTHONPATH="$SCRIPT_DIR/..${PYTHONPATH:+:$PYTHONPATH}" "$PYTHON_CMD" -m calcx "$expr"; then
             exit 0
-        else
-            echo "Error in expression: '$expr'" >&2
-            exit 1
         fi
+        echo "Error in expression: '$expr'" >&2
+        exit 1
     fi
 
     echo "Error: neither 'bc' nor Python available to evaluate expression." >&2
