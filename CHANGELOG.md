@@ -6,6 +6,7 @@ All notable changes to CalcX Advanced are documented here.
 
 ### Fixed
 
+- Añade límites de dimensión y evaluaciones a matrices, integración y DFT, y usa la fórmula cuadrática estable cuando los coeficientes provocan cancelación.
 - Mantiene los enteros para `factorial` y limita exponentes, nodos AST y argumentos desproporcionados.
 - Usa tolerancia relativa para inversión de matrices y verifica el residuo de Newton.
 
