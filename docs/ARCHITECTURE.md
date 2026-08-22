@@ -8,7 +8,7 @@ La primera figura responde qué se ejecuta. La secuencia responde qué ocurre co
 
 ## 1. Mapa de componentes
 
-~~~mermaid
+```mermaid
 flowchart LR
     subgraph ENTRY[Entradas]
       SH[calcx shell]
@@ -32,7 +32,7 @@ flowchart LR
     ENG --> OUT[salida texto o JSON]
     ENG --> ERR[error tipado y salida 2]
     HIST --> FILE[archivo de historial atomico]
-~~~
+```
 
 Componentes comprobables:
 
@@ -47,7 +47,7 @@ Componentes comprobables:
 
 ## 2. Secuencia de una expresión
 
-~~~mermaid
+```mermaid
 sequenceDiagram
     participant User
     participant CLI as main CLI
@@ -58,7 +58,7 @@ sequenceDiagram
     User->>CLI: calcx --precision N --json expression
     CLI->>Config: load cli_precision
     Config-->>CLI: precision + history path + limit
-    CLI->>Parser: replace ^ with **; parse expression
+    CLI->>Parser: normalize exponent syntax and parse expression
     Parser-->>Eval: AST or SyntaxError
     Eval->>Eval: allow-list visits nodes
     Eval-->>CLI: value or typed Domain/Expression error
@@ -68,7 +68,7 @@ sequenceDiagram
     else expected input/domain failure
       CLI-->>User: error on stderr + exit 2
     end
-~~~
+```
 
 ## 3. Precedencia y persistencia
 
