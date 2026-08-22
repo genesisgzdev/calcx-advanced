@@ -25,9 +25,9 @@ La evidencia es el código de [`calcx/`](calcx/), los tests de [`tests/`](tests/
 flowchart LR
     A[argumentos] --> B{hay expresión?}
     B -- no --> C[menú Bash legado]
-    B -- sí --> D[calcx/cli.py]
-    D --> E[parser AST allow-list]
-    E --> F[engine Decimal/complex]
+    B -- sí --> D[CLI Python]
+    D --> E[parser AST allow list]
+    E --> F[engine Decimal y complex]
     F --> G[texto o JSON]
     D -. REPL .-> H[historial acotado y atómico]
 ```

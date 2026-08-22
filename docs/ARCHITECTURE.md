@@ -11,27 +11,27 @@ La primera figura responde qué se ejecuta. La secuencia responde qué ocurre co
 ~~~mermaid
 flowchart LR
     subgraph ENTRY[Entradas]
-      SH[calcx.sh]
-      PM[python -m calcx]
-      PX[pipx console: calcx]
+      SH[calcx shell]
+      PM[python module]
+      PX[pipx console]
     end
-    SH -->|sin expresión| MENU[src/calcx-advanced.sh menu]
+    SH -->|sin expresión| MENU[menu Bash legado]
     SH -->|expresión o flags| PX
-    PM --> CLI[calcx/cli.py]
+    PM --> CLI[modulo CLI]
     PX --> CLI
     subgraph PY[Paquete Python]
-      CLI --> CFG[config.Config.load]
-      CLI --> ENG[engine.evaluate]
-      ENG --> AST[ast.Expression + NodeVisitor allow-list]
-      ENG --> NUM[Decimal / complex / math / cmath]
-      CLI --> HIST[history.History]
-      OPS[operations.py library API]
+      CLI --> CFG[carga de config]
+      CLI --> ENG[evaluacion]
+      ENG --> AST[AST y lista permitida]
+      ENG --> NUM[Decimal complex y math]
+      CLI --> HIST[historial]
+      OPS[API de operaciones]
     end
     CFG --> ENG
     CFG --> HIST
-    ENG --> OUT[stdout: text or JSON]
-    ENG --> ERR[typed error + exit 2]
-    HIST --> FILE[bounded atomic history file]
+    ENG --> OUT[salida texto o JSON]
+    ENG --> ERR[error tipado y salida 2]
+    HIST --> FILE[archivo de historial atomico]
 ~~~
 
 Componentes comprobables:
@@ -46,10 +46,10 @@ Componentes comprobables:
 ~~~mermaid
 sequenceDiagram
     participant User
-    participant CLI as cli.main
-    participant Config as Config.load
-    participant Parser as ast.parse eval
-    participant Eval as _Evaluator
+    participant CLI as main CLI
+    participant Config as carga config
+    participant Parser as parser AST
+    participant Eval as evaluador
     participant History
     User->>CLI: calcx --precision N --json expression
     CLI->>Config: load cli_precision
