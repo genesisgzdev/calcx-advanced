@@ -33,7 +33,7 @@ else
 fi
 
 repl=$(printf 'quit\n' | "$ROOT_DIR/calcx.sh")
-if [[ "$repl" == *"Escribe 'help' o 'quit'"* ]]; then
+if [[ "$repl" == *"Tu espacio para hacer cuentas"* ]]; then
     print_success "No-argument wrapper uses the Python REPL"
 else
     failures=$((failures + 1))
@@ -41,7 +41,7 @@ else
 fi
 
 legacy_repl=$(printf 'quit\n' | bash "$ROOT_DIR/src/calcx-advanced.sh")
-if [[ "$legacy_repl" == *"Escribe 'help' o 'quit'"* ]]; then
+if [[ "$legacy_repl" == *"Tu espacio para hacer cuentas"* ]]; then
     print_success "Historical script delegates to the Python REPL"
 else
     failures=$((failures + 1))

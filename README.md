@@ -1,111 +1,82 @@
-# CalcX Advanced
+# CalcX
 
-Calculadora científica de terminal para personas y scripts. La ruta de expresiones usa un AST de Python con allow-list explícita, no `eval`, y devuelve texto o JSON determinista.
+Haz una cuenta rápida o quédate un rato resolviendo varias. CalcX calcula porcentajes, raíces, potencias y funciones científicas desde una ventana de terminal. Guarda las cuentas para que puedas volver a consultarlas.
 
-En 30 segundos: ejecuta `./calcx.sh 'sqrt(144)'` para una cuenta, `--json` para automatización y `--interactive` para la REPL Python. Sin expresión, el wrapper también entra en esa REPL segura; el menú Bash histórico no forma parte de la ruta ejecutable. El núcleo no necesita dependencias externas obligatorias.
+[Ver comprobaciones](https://github.com/genesisgzdev/calcx-advanced/actions) · [Manual](docs/MANUAL.md) · [Cómo funciona](docs/ARCHITECTURE.md)
 
-[![CI](https://github.com/genesisgzdev/calcx-advanced/actions/workflows/ci.yml/badge.svg)](https://github.com/genesisgzdev/calcx-advanced/actions/workflows/ci.yml)
-[![Latest release](https://img.shields.io/github/v/release/genesisgzdev/calcx-advanced)](https://github.com/genesisgzdev/calcx-advanced/releases)
-[![License](https://img.shields.io/github/license/genesisgzdev/calcx-advanced)](LICENSE)
+## Empieza aquí
 
-## Qué está respaldado hoy
+Necesitas Python 3.10 o posterior. Descarga este repositorio y abre una terminal dentro de su carpeta. En Windows usa `python`; en Linux o macOS puede llamarse `python3`.
 
-- Decimal arithmetic with configurable precision
-- Complex numbers, matrices and numerical methods
-- Trigonometric, logarithmic, hyperbolic and rounding functions
-- JSON output for scripts and other tools
-- límites de nodos AST, exponentes y factoriales para evitar operaciones desproporcionadas
-- Direct CLI and interactive Python REPL
-- configuración XDG e historial acotado con escritura atómica
+```sh
+python -m calcx
+```
 
-La evidencia es el código de [`calcx/`](calcx/), los tests de [`tests/`](tests/) y los checks de shell listados más abajo. La arquitectura completa, con los wrappers de entrada y sus límites, está en [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
+Verás ejemplos y una invitación a escribir tu cuenta. Prueba `80 * 15 / 100` y pulsa Enter. El resultado es 12, el 15 % de 80. Para cerrar, escribe `salir`.
 
-## Flujo principal
+¿Solo quieres resolver una cuenta?
+
+```sh
+python -m calcx "sqrt(144)"
+```
+
+## Lo que puedes escribir
+
+| Quieres calcular | Escribe |
+| --- | --- |
+| Repartir 120 entre cuatro | `120 / 4` |
+| El 15 % de 80 | `80 * 15 / 100` |
+| Aplicar un descuento del 20 % | `80 * (1 - 20 / 100)` |
+| Una raíz cuadrada | `sqrt(144)` |
+| Una potencia | `2^10` |
+| Un ángulo en radianes | `sin(pi / 2)` |
+| Un número complejo | `sqrt(-9)` |
+
+Usa un punto para los decimales. La multiplicación se escribe `*`. El símbolo `%` calcula el resto de una división; para porcentajes usa la fórmula de la tabla.
+
+## Una calculadora que te acompaña
+
+Dentro de CalcX puedes escribir `ayuda`, `funciones` o `historial`. `precision 40` cambia las próximas cuentas a 40 cifras significativas. `borrar` elimina el historial guardado y `salir` cierra la calculadora. Los comandos anteriores en inglés siguen funcionando.
 
 ```mermaid
-flowchart LR
-    A[argumentos] --> B{hay expresión?}
-    B -- no --> C[REPL Python]
-    B -- sí --> D[CLI Python]
-    D --> E[parser AST allow list]
-    E --> F[engine Decimal y complex]
-    F --> G[texto o JSON]
-    D -. REPL .-> H[historial acotado y atómico]
+flowchart TD
+    A["Escribe una cuenta"] --> B{"¿Se puede calcular?"}
+    B -- Sí --> C["Lee el resultado y guárdalo en el historial"]
+    B -- No --> D["Lee la explicación y corrige la cuenta"]
+    D --> A
 ```
 
-Los módulos matemáticos, la precedencia de configuración y la secuencia de errores están en el documento de arquitectura.
+## Instalar el comando corto
 
-El paquete principal no necesita dependencias externas. La precisión configurable se aplica a los literales y operaciones `Decimal`; las funciones trascendentes y complejas pasan por `math`/`cmath` y mantienen la precisión de doble flotante.
+Desde la carpeta del proyecto puedes instalarlo en un entorno de Python:
 
-## Inicio rápido
-
-```bash
-git clone https://github.com/genesisgzdev/calcx-advanced.git
-cd calcx-advanced
-
-./calcx.sh 'sqrt(144)'
-./calcx.sh --json '2 + 2'
-./calcx.sh --precision 50 '1/7'
-./calcx.sh --interactive
+```sh
+python -m venv .venv
 ```
 
-To install the `calcx` command with `pipx`:
+Actívalo con `.venv\Scripts\activate` en Windows o `source .venv/bin/activate` en Linux y macOS. Después ejecuta:
 
-```bash
-python3 -m pip install --user pipx
-pipx install .
-calcx '2^10'
+```sh
+python -m pip install .
+calcx
 ```
 
-`^` is accepted as exponentiation. Constants include `pi`, `e`, `tau` and `i`.
+Si usas Bash, `./calcx.sh` abre la misma calculadora. No necesitas instalar bibliotecas externas para hacer cuentas.
 
-## Límites de confianza
+## Cuando necesitas más detalle
 
-Las expresiones se analizan con el AST de Python y se comparan con una lista explícita de nodos permitidos. CalcX no llama a `eval`, `exec`, un shell ni comandos proporcionados por el usuario. Las expresiones inválidas se informan por `stderr` y devuelven un código distinto de cero.
+La precisión decimal puede ajustarse de 1 a 1000 cifras. Las funciones trigonométricas y complejas tienen la precisión del cálculo de máquina; pedir más cifras no añade precisión a esas funciones. `sqrt` conserva la precisión decimal para valores decimales no negativos.
 
-Esto respalda el rechazo de ejecución de código dentro del evaluador y una interfaz útil para automatización. No respalda precisión certificada, seguridad financiera ni resultados safety-critical: esos resultados deben verificarse por una segunda vía.
+Las operaciones de matrices, integración y transformadas están disponibles como funciones Python, explicadas en el [manual](docs/MANUAL.md). No se anuncian como comandos de la calculadora si aún no lo son.
 
-Las funciones mantienen sus dominios: `factorial` exige un entero no negativo y limita el argumento a 1.000 para que el resultado pueda formatearse de forma controlada. Las expresiones tienen un máximo de 256 nodos y los exponentes una magnitud máxima de 10.000. Las operaciones matriciales usan una tolerancia relativa y Newton comprueba tanto el paso como el residuo.
+Para conectar CalcX con otro programa usa `calcx --json "2+2"`. Recibirás un objeto con el resultado. Consulta el [contrato de salida y los límites de cálculo](docs/ARCHITECTURE.md).
 
-## Configuración e historial
+## Si algo no sale
 
-El archivo de configuración opcional se lee desde `$XDG_CONFIG_HOME/calcx/config.env` o `~/.config/calcx/config.env`:
+- Si no reconoce `calcx`, usa `python -m calcx` desde la carpeta del proyecto
+- Si una cuenta falla, revisa paréntesis, nombres de funciones y divisiones entre cero
+- Si no puede guardar el historial, muestra el resultado y avisa del problema de escritura
 
-```text
-PRECISION=40
-HISTORY_LIMIT=500
-HISTORY_FILE=~/.local/state/calcx/history
-```
+Para comprobar el proyecto ejecuta `python -m unittest discover -s tests -p "test_*.py"`. El [mapa de archivos](docs/REPOSITORY_MAP.md) te ayuda a encontrar cada parte.
 
-`CALCX_PRECISION`, `CALCX_HISTORY_LIMIT` and `CALCX_HISTORY` override the file. Command-line options take precedence over both. History is stored under `~/.local/state/calcx` by default.
-
-## Instalar y comprobar
-
-```bash
-python3 -m unittest discover -s tests -p 'test_*.py' -v
-bash tests/run_tests.sh
-python3 -m compileall -q calcx
-bash -n calcx.sh
-```
-
-La prueba aislada del contenedor usa una imagen mínima, red desactivada, 256 MiB, un CPU, 64 procesos y filesystem de solo lectura:
-
-```bash
-docker compose run --rm calcx-audit
-```
-
-Versión actual: `2.0.5`. `src/calcx-advanced.sh` se conserva para auditoría histórica, pero tanto ese script como `calcx.sh` derivan la entrada mantenida al paquete Python. El menú Bash y sus rutas basadas en `awk`/`bc` ya no son una superficie ejecutable del producto.
-
-Para una lectura más profunda: [manual de uso](docs/MANUAL.md), [arquitectura](docs/ARCHITECTURE.md) y [cambios por versión](CHANGELOG.md).
-
-## Licencia
-
-MIT. See [LICENSE](LICENSE).
-
-## Integridad numérica y archivos
-
-Los literales decimales se leen desde el texto original del AST y no pasan primero por un float binario. La precisión configurada se aplica también al resultado final. Las funciones reales de `math` siguen teniendo precisión de máquina; usar Decimal no convierte esas funciones en multiprecisión. Las matrices rechazan entradas y resultados no finitos, y Newton reconoce una raíz exacta antes de intentar dividir por la derivada.
-
-El historial se reemplaza de forma atómica con un archivo temporal privado y un lock por proceso. Un fallo de escritura del historial se informa por stderr y no invalida un cálculo correcto. `XDG_STATE_HOME` controla su ubicación. La instalación conserva una configuración de usuario ya existente.
-
-El inventario completo de archivos y flujos está en [docs/REPOSITORY_MAP.md](docs/REPOSITORY_MAP.md).
+Licencia [MIT](LICENSE).

@@ -1,89 +1,60 @@
-# CalcX architecture
+# Cómo funciona CalcX
 
-Este documento sigue las entradas del repositorio y distingue el script Bash histórico del motor Python mantenido. El script histórico no se ejecuta como menú: deriva al REPL Python.
+Una cuenta recorre tres pasos: entender lo que escribiste, calcularlo y presentar el resultado. Puedes usar CalcX sin conocer estas piezas. Esta guía sirve para revisar o ampliar el programa.
 
-## Cómo leerlo
-
-La primera figura responde qué se ejecuta. La secuencia responde qué ocurre con una expresión. La tabla responde qué puede cambiar el resultado. No muestra cada función matemática porque eso no ayuda a entender el sistema; esas funciones están en el código y en el manual.
-
-## 1. Mapa de componentes
+## Del texto al resultado
 
 ```mermaid
-flowchart LR
-    subgraph ENTRY[Entradas]
-      SH[calcx shell]
-      PM[python module]
-      PX[pipx console]
-    end
-    SH -->|sin expresión| REPL[REPL Python]
-    SH -->|expresión o flags| PX
-    PM --> CLI[modulo CLI]
-    PX --> CLI
-    subgraph PY[Paquete Python]
-      CLI --> CFG[carga de config]
-      CLI --> ENG[evaluacion]
-      ENG --> AST[AST y lista permitida]
-      ENG --> NUM[Decimal complex y math con límites]
-      CLI --> HIST[historial]
-      OPS[API de operaciones]
-    end
-    CFG --> ENG
-    CFG --> HIST
-    ENG --> OUT[salida texto o JSON]
-    ENG --> ERR[error tipado y salida 2]
-    HIST --> FILE[archivo de historial atomico]
+flowchart TD
+    A["Cuenta escrita por la persona"] --> B["Revisar números, operadores y funciones"]
+    B --> C{"¿La expresión está permitida?"}
+    C -- Sí --> D["Calcular con la precisión elegida"]
+    C -- No --> E["Explicar el error"]
 ```
 
-Componentes comprobables:
+El resultado se muestra antes de guardar el historial. Si falla el guardado, se conserva la cuenta calculada y se avisa del problema. Eso evita que una carpeta sin permisos convierta un resultado válido en un error de cálculo.
 
-- `calcx.sh` y `src/calcx-advanced.sh` derivan cualquier entrada al paquete Python; el código Bash histórico no recibe fórmulas del usuario durante una ejecución mantenida.
-- `calcx/cli.py` decide entre cálculo directo, JSON y REPL. `--interactive` entra en el REPL Python.
-- `calcx/engine.py` solo visita `Expression`, constantes, nombres permitidos, llamadas permitidas, operadores binarios y unarios. `generic_visit` rechaza lo demás.
-- `calcx/operations.py` es una API de operaciones numéricas y no significa que esas funciones estén expuestas desde expresiones de consola.
-- `precision` no convierte automáticamente `sin`, `cos`, `log`, `sqrt` ni las operaciones complejas en aritmética arbitraria: esas rutas usan `math`/`cmath`. Las operaciones que conservan `Decimal` sí respetan el contexto configurado.
-- El evaluador limita el AST a 256 nodos, el exponente a una magnitud de 10.000 y `factorial` a enteros no negativos de hasta 10.000.
-- `matrix_inverse` compara el pivote con una tolerancia relativa a la escala de la matriz. `newton` exige paso pequeño y residuo pequeño antes de declarar convergencia.
-- Las operaciones avanzadas tienen presupuestos propios: matrices de hasta 128x128, Simpson hasta 1.000.000 de intervalos y DFT hasta 4.096 muestras. La cuadrática usa una pareja de raíces estable para reducir cancelación.
+| Archivo | Trabajo que realiza |
+| --- | --- |
+| `calcx/cli.py` | Conversación de la calculadora, ayuda y salida para otros programas |
+| `calcx/config.py` | Leer y comprobar las preferencias |
+| `calcx/engine.py` | Entender expresiones y calcularlas |
+| `calcx/history.py` | Guardar y consultar cuentas |
+| `calcx/operations.py` | Funciones avanzadas para programas Python |
 
-## 2. Secuencia de una expresión
+`calcx.sh`, `src/calcx-advanced.sh`, `python -m calcx` y el comando instalado llegan al mismo paquete Python. El menú Bash antiguo no recibe expresiones en el recorrido mantenido.
 
-```mermaid
-sequenceDiagram
-    participant User
-    participant CLI as main CLI
-    participant Config as carga config
-    participant Parser as parser AST
-    participant Eval as evaluador
-    participant History
-    User->>CLI: calcx --precision N --json expression
-    CLI->>Config: load cli_precision
-    Config-->>CLI: precision + history path + limit
-    CLI->>Parser: normalize exponent syntax and parse expression
-    Parser-->>Eval: AST or SyntaxError
-    Eval->>Eval: allow-list visits nodes
-    Eval-->>CLI: value or typed Domain/Expression error
-    alt success
-      CLI->>History: add expression and rendered result
-      CLI-->>User: one JSON object + exit 0
-    else expected input/domain failure
-      CLI-->>User: error on stderr + exit 2
-    end
-```
+## Qué significa «entender una cuenta»
 
-## 3. Precedencia y persistencia
+El motor usa el analizador de expresiones de Python, llamado AST, pero solo acepta números, nombres conocidos, operadores y llamadas de su lista. No ejecuta código Python escrito en la cuenta. Atributos, importaciones y estructuras ajenas a ese lenguaje de calculadora se rechazan.
 
-| Nivel | Fuente | Qué controla |
+Las entradas decimales se leen de su texto original para evitar redondearlas primero a un número binario. Las operaciones con `Decimal` y la raíz de un decimal no negativo respetan la precisión elegida. Las funciones de `math` y `cmath`, incluidas las trigonométricas y las complejas, conservan precisión de máquina. Las constantes `pi`, `e` y `tau` tampoco ganan cifras al aumentar la configuración.
+
+## Tamaños y precisión
+
+| Control | Valor actual | Por qué existe |
 | --- | --- | --- |
-| 1 | CLI | precision explícita |
-| 2 | entorno | `CALCX_PRECISION`, `CALCX_HISTORY_LIMIT`, `CALCX_HISTORY` |
-| 3 | `config.env` | `PRECISION`, `HISTORY_LIMIT`, `HISTORY_FILE` |
-| 4 | defaults | precision 28, límite 1000, ruta XDG/local |
+| Precisión decimal | 1 a 1000 cifras | Mantener un tamaño de cálculo explícito |
+| Longitud de una expresión | 4096 caracteres | Rechazar entradas desproporcionadas |
+| Partes del árbol de expresión | 256 | Controlar la complejidad del análisis |
+| Magnitud del exponente | 10 000 | Evitar crecimientos numéricos desproporcionados |
+| Argumento de factorial | 0 a 1000, entero | Mantener calculable y representable el resultado |
+| Matriz | Hasta 128 por 128 | Acotar el trabajo de inversión |
+| Integración de Simpson | Hasta 1 000 000 de intervalos pares | Acotar evaluaciones de la función |
+| Transformada DFT | Hasta 4096 muestras | Esta implementación requiere trabajo cuadrático |
 
-`Config.load` limita precisión a 1..1000 y el límite de historial a un mínimo de 1. `History` crea el directorio y reemplaza el archivo mediante escritura temporal; no es una base de datos ni un almacén multiusuario.
+La inversa de matrices comprueba valores finitos y compara los pivotes con la escala de la matriz. Newton comprueba el residuo, reconoce una raíz exacta antes de dividir y limita sus iteraciones. La ecuación cuadrática evita una resta que perdería precisión cuando sus términos son muy parecidos.
 
-## 4. Validación real
+## Preferencias e historial
 
-- `tests/test_engine.py`: AST, operaciones, errores, JSON y rechazo de ejecución de código.
-- `tests/test_basic.sh`: wrapper y operaciones shell básicas.
-- `tests/run_tests.sh`, `compileall` y `bash -n`: contratos locales de shell y sintaxis.
-- No existe una garantía de precisión certificada para uso financiero o safety-critical; el propio resultado debe verificarse fuera de CalcX.
+Se aplica primero `--precision`, después el entorno y después `config.env`. Sin configuración se usan 28 cifras y se conservan 1000 cuentas. Los valores fuera del rango permitido se rechazan; no se sustituyen silenciosamente por otro valor.
+
+`precision 40` cambia la sesión abierta. El historial usa un bloqueo entre procesos y reemplaza el archivo mediante una escritura temporal privada. Cada escritor vuelve a leer las últimas cuentas antes de añadir la suya. No es una base multiusuario.
+
+## Comprobar un cambio
+
+`tests/test_engine.py` y `tests/test_regressions.py` comprueban resultados, composición decimal, rechazo de código, errores y escritura concurrente. Los tests de interfaz cubren la conversación y que JSON no abra una sesión por accidente. `tests/run_tests.sh` comprueba también las entradas Bash.
+
+El modo directo devuelve 0 al calcular y 2 ante errores esperados. Con `--json`, el resultado o error de cálculo es un objeto. Los errores de argumentos y configuración usan la salida de errores.
+
+[Volver al manual](MANUAL.md) · [Mapa completo de archivos](REPOSITORY_MAP.md)

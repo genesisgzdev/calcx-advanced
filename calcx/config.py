@@ -36,4 +36,8 @@ class Config:
             raise ConfigError("invalid numeric configuration; check CALCX_PRECISION and CALCX_HISTORY_LIMIT") from exc
         state_root = Path(os.environ.get("XDG_STATE_HOME", Path.home() / ".local/state"))
         history = os.environ.get("CALCX_HISTORY", values.get("HISTORY_FILE", str(state_root / "calcx/history")))
-        return cls(max(1, min(selected_precision, 1000)), max(1, selected_history_limit), history_file=Path(history).expanduser())
+        if not 1 <= selected_precision <= 1000:
+            raise ConfigError("la precisión debe estar entre 1 y 1000 cifras")
+        if selected_history_limit < 1:
+            raise ConfigError("el historial debe guardar al menos una cuenta")
+        return cls(selected_precision, selected_history_limit, history_file=Path(history).expanduser())
