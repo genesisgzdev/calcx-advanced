@@ -34,6 +34,10 @@ def _log(x: Any, base: Any = math.e) -> Any:
 
 
 def _factorial(value: Any) -> int:
+    if isinstance(value, complex):
+        raise DomainError("factorial requires a non-negative integer")
+    if value > MAX_FACTORIAL_ARGUMENT:
+        raise DomainError(f"factorial argument exceeds {MAX_FACTORIAL_ARGUMENT}")
     if isinstance(value, Decimal):
         if value != value.to_integral_value() or value < 0:
             raise DomainError("factorial requires a non-negative integer")
@@ -58,12 +62,31 @@ CONSTANTS = {"pi": Decimal(str(math.pi)), "e": Decimal(str(math.e)), "tau": Deci
 
 
 class _Evaluator(ast.NodeVisitor):
+    def __init__(self, source: str):
+        self.source = source
+
+    def visit(self, node: ast.AST) -> Any:
+        value = super().visit(node)
+        if isinstance(value, complex):
+            if not math.isfinite(value.real) or not math.isfinite(value.imag):
+                raise DomainError("result is not finite")
+            return value
+        # Functions returning float/int must compose with Decimal operators.
+        # Converting factorial results here also prevents unbounded int powers.
+        value = value if isinstance(value, Decimal) else Decimal(str(value))
+        if not value.is_finite():
+            raise DomainError("result is not finite")
+        return value
+
     def visit_Expression(self, node: ast.Expression) -> Any:
         return self.visit(node.body)
 
     def visit_Constant(self, node: ast.Constant) -> Any:
         if isinstance(node.value, (int, float)) and not isinstance(node.value, bool):
-            return Decimal(str(node.value))
+            literal = ast.get_source_segment(self.source, node).replace("_", "")
+            if literal.lower().startswith(("0x", "0o", "0b")):
+                return Decimal(node.value)
+            return Decimal(literal)
         if isinstance(node.value, complex):
             return node.value
         raise ExpressionError("unsupported literal")
@@ -86,10 +109,10 @@ class _Evaluator(ast.NodeVisitor):
             if isinstance(node.op, ast.Mod): return left % right
             if isinstance(node.op, ast.Pow):
                 exponent = float(right) if isinstance(right, Decimal) else right
-                if isinstance(exponent, (int, float)) and abs(exponent) > MAX_EXPONENT:
+                if abs(exponent) > MAX_EXPONENT:
                     raise DomainError(f"exponent magnitude exceeds {MAX_EXPONENT}")
                 return left ** right
-        except (ArithmeticError, ValueError, ZeroDivisionError) as exc:
+        except (ArithmeticError, ValueError, TypeError) as exc:
             raise DomainError(str(exc)) from exc
         raise ExpressionError("unsupported operator")
 
@@ -130,7 +153,11 @@ def evaluate(expression: str, precision: int = 28) -> Any:
         raise ExpressionError("expression nesting is too deep")
     with localcontext() as context:
         context.prec = max(1, min(int(precision), 1000))
-        return _Evaluator().visit(tree)
+        try:
+            value = _Evaluator(expression).visit(tree)
+            return +value
+        except (ArithmeticError, ValueError, TypeError) as exc:
+            raise DomainError(str(exc)) from exc
 
 
 def format_value(value: Any, precision: int = 12) -> str:

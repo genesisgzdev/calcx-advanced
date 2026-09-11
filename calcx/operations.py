@@ -34,6 +34,8 @@ def matrix_inverse(matrix: list[list[float]]) -> list[list[float]]:
     if n > MAX_MATRIX_DIMENSION:
         raise ExpressionError(f"matrix dimension exceeds {MAX_MATRIX_DIMENSION}")
     augmented = [list(map(float, row)) + [float(i == j) for j in range(n)] for i, row in enumerate(matrix)]
+    if not all(math.isfinite(value) for row in augmented for value in row):
+        raise DomainError("matrix entries must be finite")
     scale = max((abs(value) for row in augmented for value in row[:n]), default=0.0)
     if scale == 0.0: raise DomainError("matrix is singular")
     for col in range(n):
@@ -46,7 +48,10 @@ def matrix_inverse(matrix: list[list[float]]) -> list[list[float]]:
             if row == col: continue
             factor = augmented[row][col]
             augmented[row] = [a - factor * b for a, b in zip(augmented[row], augmented[col])]
-    return [row[n:] for row in augmented]
+    result = [row[n:] for row in augmented]
+    if not all(math.isfinite(value) for row in result for value in row):
+        raise DomainError("matrix inverse is not finite")
+    return result
 
 
 def integrate(function, start: float, end: float, intervals: int = 1000) -> float:
@@ -60,9 +65,18 @@ def integrate(function, start: float, end: float, intervals: int = 1000) -> floa
 
 
 def newton(function, derivative, guess: float, tolerance: float = 1e-12, iterations: int = 100) -> float:
+    if not math.isfinite(tolerance) or tolerance <= 0:
+        raise ExpressionError("tolerance must be positive and finite")
+    if not isinstance(iterations, int) or not 1 <= iterations <= 100_000:
+        raise ExpressionError("iterations must be an integer between 1 and 100000")
     x = float(guess)
+    if not math.isfinite(x):
+        raise ConvergenceError("initial guess must be finite")
     for _ in range(iterations):
-        fx, dfx = function(x), derivative(x)
+        fx = function(x)
+        if math.isfinite(fx) and abs(fx) <= tolerance:
+            return x
+        dfx = derivative(x)
         if not math.isfinite(fx) or not math.isfinite(dfx) or abs(dfx) < 1e-15:
             raise ConvergenceError("derivative is invalid or too close to zero")
         next_x = x - fx / dfx

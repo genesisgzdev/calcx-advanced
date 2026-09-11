@@ -101,3 +101,11 @@ Para una lectura más profunda: [manual de uso](docs/MANUAL.md), [arquitectura](
 ## Licencia
 
 MIT. See [LICENSE](LICENSE).
+
+## Integridad numérica y archivos
+
+Los literales decimales se leen desde el texto original del AST y no pasan primero por un float binario. La precisión configurada se aplica también al resultado final. Las funciones reales de `math` siguen teniendo precisión de máquina; usar Decimal no convierte esas funciones en multiprecisión. Las matrices rechazan entradas y resultados no finitos, y Newton reconoce una raíz exacta antes de intentar dividir por la derivada.
+
+El historial se reemplaza de forma atómica con un archivo temporal privado y un lock por proceso. Un fallo de escritura del historial se informa por stderr y no invalida un cálculo correcto. `XDG_STATE_HOME` controla su ubicación. La instalación conserva una configuración de usuario ya existente.
+
+El inventario completo de archivos y flujos está en [docs/REPOSITORY_MAP.md](docs/REPOSITORY_MAP.md).
