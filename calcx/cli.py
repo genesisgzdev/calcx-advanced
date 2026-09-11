@@ -29,7 +29,10 @@ def calculate(expression: str, config: Config, as_json: bool = False) -> int:
             print(json.dumps({"expression": expression, "result": rendered, "precision": config.precision}, ensure_ascii=False))
         else:
             print(rendered)
-        History(config.history_file, config.history_limit).add(expression, rendered)
+        try:
+            History(config.history_file, config.history_limit).add(expression, rendered)
+        except (OSError, UnicodeError) as exc:
+            print(f"calcx: could not save history: {exc}", file=sys.stderr)
         return 0
     except CalcXError as exc:
         if as_json: print(json.dumps({"error": type(exc).__name__, "message": str(exc)}))
@@ -44,8 +47,14 @@ def repl(config: Config) -> int:
         except (EOFError, KeyboardInterrupt): print(); return 0
         if line in {"quit", "exit", "q"}: return 0
         if line == "help": print("Escribe una expresión, 'history', 'clear' o 'quit'."); continue
-        if line == "history": print("\n".join(History(config.history_file, config.history_limit).entries)); continue
-        if line == "clear": History(config.history_file, config.history_limit).clear(); print("historial eliminado"); continue
+        if line in {"history", "clear"}:
+            try:
+                history = History(config.history_file, config.history_limit)
+                if line == "history": print("\n".join(history.entries))
+                else: history.clear(); print("historial eliminado")
+            except (OSError, UnicodeError) as exc:
+                print(f"calcx: could not access history: {exc}", file=sys.stderr)
+            continue
         if line: calculate(line, config)
 
 

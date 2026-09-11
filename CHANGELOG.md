@@ -2,6 +2,15 @@
 
 All notable changes to CalcX Advanced are documented here.
 
+## Unreleased
+
+- Actualiza checkout en CI y auditoría a la generación que ejecuta sobre Node 24.
+- Actualiza `setup-python` a la generación que ejecuta sobre Node 24.
+- Corrige la combinación `sqrt(2)^2`, limita factorial a un resultado que el CLI puede formatear y rechaza coeficientes o raíces no finitos en la cuadrática.
+- Corrige la sintaxis YAML de los workflows para que GitHub pueda crear sus jobs.
+- El escaneo de secretos recibe el historial completo del checkout y ya no falla por una referencia ausente en un clone superficial.
+- Añade un contenedor de auditoría sin red con límites de memoria, CPU, procesos y filesystem de escritura.
+
 ## [2.0.5] - 2026-08-22
 
 ### Documentation
@@ -20,6 +29,9 @@ All notable changes to CalcX Advanced are documented here.
 - Las funciones trascendentales siguen limitadas por el backend numérico disponible; aumentar `Decimal` no convierte operaciones `float` en precisión arbitraria.
 
 ## [Unreleased]
+
+- El runner shell de pruebas resuelve sus rutas desde el propio script y funciona igual desde la raíz o desde otro directorio.
+- Retira el menú Bash de la ruta ejecutable sin argumentos. `calcx.sh` y el script histórico derivan al REPL Python con allow-list AST, evitando que fórmulas de usuario lleguen a programas `awk` o `bc` construidos dinámicamente.
 
 ## [2.0.4] - 2026-08-20
 

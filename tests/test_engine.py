@@ -3,11 +3,18 @@ import os
 import subprocess
 import sys
 import unittest
+import tempfile
+from multiprocessing import Process
 from pathlib import Path
 
 from calcx.engine import evaluate
 from calcx.errors import DomainError, ExpressionError
 from calcx.operations import dft, integrate, matrix_inverse, newton, quadratic
+from calcx.history import History
+
+
+def _write_history(path: str, value: int) -> None:
+    History(Path(path)).add(str(value), str(value))
 
 
 class EngineTests(unittest.TestCase):
@@ -22,11 +29,41 @@ class EngineTests(unittest.TestCase):
         source = (Path(__file__).parents[1] / "src" / "calcx-advanced.sh").read_text(encoding="utf-8")
         self.assertNotIn("eval(", source)
 
+    def test_legacy_shell_expression_path_uses_the_ast_engine(self):
+        root = Path(__file__).parents[1]
+        env = {**os.environ, "PYTHONPATH": str(root)}
+        result = subprocess.run(
+            ["bash", str(root / "src" / "calcx-advanced.sh"), "define f(x) { return x; }"],
+            cwd=root, env=env, text=True, capture_output=True,
+        )
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("invalid expression", result.stderr)
+
     def test_domain_errors_are_typed(self):
         with self.assertRaises(DomainError): evaluate("1/0")
         self.assertEqual(evaluate("factorial(5)"), 120)
         with self.assertRaises(DomainError): evaluate("factorial(5.5)")
+        with self.assertRaises(DomainError): evaluate("factorial(10000)")
         with self.assertRaises(DomainError): evaluate("2^10001")
+
+    def test_decimal_sqrt_stays_in_the_decimal_domain(self):
+        self.assertAlmostEqual(float(evaluate("sqrt(2)^2")), 2.0, places=12)
+
+    def test_quadratic_rejects_non_finite_inputs_and_outputs(self):
+        with self.assertRaises(DomainError): quadratic(1.0, float("inf"), 1.0)
+        with self.assertRaises(DomainError): quadratic(1.0, 1e308, 1.0)
+
+    def test_history_serializes_concurrent_process_writes(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = str(Path(tmp) / "history")
+            workers = [Process(target=_write_history, args=(path, value)) for value in range(16)]
+            for worker in workers: worker.start()
+            for worker in workers:
+                worker.join(timeout=5)
+                self.assertEqual(worker.exitcode, 0)
+            entries = Path(path).read_text(encoding="utf-8").splitlines()
+            self.assertEqual(len(entries), 16)
+            self.assertEqual({line.split(" = ", 1)[0] for line in entries}, {str(v) for v in range(16)})
 
     def test_matrix_and_quadratic(self):
         inverse = matrix_inverse([[4, 7], [2, 6]])
