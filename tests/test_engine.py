@@ -37,7 +37,7 @@ class EngineTests(unittest.TestCase):
             cwd=root, env=env, text=True, capture_output=True,
         )
         self.assertEqual(result.returncode, 2)
-        self.assertIn("invalid expression", result.stderr)
+        self.assertIn("Revisa la cuenta", result.stderr)
 
     def test_domain_errors_are_typed(self):
         with self.assertRaises(DomainError): evaluate("1/0")

@@ -1,12 +1,12 @@
 # Mapa del repositorio
 
-Revisión de estructura y flujos: 2026-09-11. Este inventario cubre los archivos versionados y las incorporaciones de esta revisión; excluye dependencias instaladas y artefactos de build. Los límites de validación aparecen por área.
+Usa este índice cuando quieras encontrar una parte del proyecto. Para empezar a usarlo, vuelve al [README](../README.md). Los archivos generados al compilar y las dependencias instaladas quedan fuera del mapa.
 
-## Flujos y fronteras
+## Qué hace cada parte
 
-| Área | Recorrido real | Verificación / límite |
+| Área | Recorrido | Qué conviene comprobar |
 | --- | --- | --- |
-| Entrada | calcx.sh y script histórico delegan en calcx.cli; argparse separa evaluación y operaciones | La ruta Bash histórica queda fuera del evaluator activo |
+| Entrada | calcx.sh y entrada compatible delegan en calcx.cli; argparse separa evaluación y operaciones | El menú antiguo se eliminó; las dos entradas usan Python |
 | Aritmética | AST con allow-list y presupuestos → Decimal o complex → normalización de salida | Literales conservan texto; math/cmath conserva precisión de máquina |
 | Operaciones | matrices, integración, Newton, cuadráticas y DFT en operations.py | Límites de tamaño y no finitos; Newton valida tolerancia e iteraciones |
 | Estado | config.py → historial con lock y reemplazo atómico | Error de historial no invalida el cálculo; archivos XDG configurables |
@@ -52,3 +52,4 @@ Revisión de estructura y flujos: 2026-09-11. Este inventario cubre los archivos
 | [tests/test_basic.sh](../tests/test_basic.sh) | Validación: test_basic |
 | [tests/test_engine.py](../tests/test_engine.py) | Validación: test_engine |
 | [tests/test_regressions.py](../tests/test_regressions.py) | Validación: test_regressions |
+| [tests/test_cli_experience.py](../tests/test_cli_experience.py) | Prueba la conversación, precisión e intercambio de resultados |
